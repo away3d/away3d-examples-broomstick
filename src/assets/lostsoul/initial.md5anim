@@ -1,0 +1,36 @@
+MD5Version 10
+commandline "anim models/monsters/lost/animation/cycles/initial.mb -dest models/md5/monsters/lostsoul/initial.md5anim -game Doom -prefix LOST_ -keep lost_flame1 -parent lost_flame1 Head"
+
+numFrames 2
+numJoints 6
+frameRate 24
+numAnimatedComponents 0
+
+hierarchy {
+	"origin"	-1 0 0	//
+	"Head"	0 0 0	// origin
+	"Jaw"	1 0 0	// Head
+	"Lbrow"	1 0 0	// Head
+	"Rbrow"	1 0 0	// Head
+	"lost_flame1"	1 0 0	// Head
+}
+
+bounds {
+	( -9.0475559235 -7.3125796318 -12.4679737091 ) ( 9.6148319244 7.3125758171 10.115316391 )
+	( -9.0475559235 -7.3125796318 -12.4679737091 ) ( 9.6148319244 7.3125758171 10.115316391 )
+}
+
+baseframe {
+	( 0 0 0 ) ( -0.7071067691 0 0 )
+	( 0 -0.2940821648 -0 ) ( 0.67449224 -0.2122739106 -0.67449224 )
+	( -0 3.0217125416 0.0000000034 ) ( -0 0.8154549003 -0.5788206458 )
+	( 2.4288654327 -5.1795563698 -6.925090313 ) ( -0.67449224 0.2122739106 0.67449224 )
+	( -2.4139049053 -5.1795563698 -6.925090313 ) ( -0.67449224 0.2122739106 0.67449224 )
+	( -0.0045702639 0.0433089212 -3.0642435551 ) ( -0.7041227221 0.0648938045 0.7041227221 )
+}
+
+frame 0 {
+}
+
+frame 1 {
+}
