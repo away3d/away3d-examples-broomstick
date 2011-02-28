@@ -1,6 +1,6 @@
 package fr.nss.duck {
-	import away3d.events.AnimationEvent;
 	import away3d.entities.Mesh;
+	import away3d.events.AnimationEvent;
 
 	import fr.nss.NSSClock;
 	import fr.nss.away4.core.animation.skeleton.NSSSkeletonSequenceController;
@@ -30,7 +30,7 @@ package fr.nss.duck {
 		public function DuckPuppet(){
 
 			eye=Mesh(World.ressources.duckEye01.mesh.clone());
-			World.view.scene.addChild(eye);
+			
 			eyeController = NSSSkeletonSequenceController(eye.animationController);
 
 			duckBodyMesh=Mesh(World.ressources.duckBody.mesh.clone());

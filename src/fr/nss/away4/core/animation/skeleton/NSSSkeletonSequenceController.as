@@ -1,13 +1,12 @@
 package fr.nss.away4.core.animation.skeleton {
-	import away3d.arcane;
 	import away3d.animators.AnimatorBase;
 	import away3d.animators.data.AnimationSequenceBase;
 	import away3d.animators.data.AnimationStateBase;
 	import away3d.animators.data.SkeletonAnimationSequence;
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.animators.skeleton.SkeletonTimelineClipNode;
 	import away3d.animators.skeleton.SkeletonTreeNode;
-	import away3d.animators.data.SkeletonAnimationState;
-
+	import away3d.arcane;
 
 	import fr.nss.NSSClock;
 
@@ -27,7 +26,6 @@ package fr.nss.away4.core.animation.skeleton {
 		private var _sequenceAbsent : String;
 		private var _timeScale : Number = 1;
 		private var _startTime : uint;
-		private var _updateRootPosition : Boolean = true;
 
 		/**
 		 * Creates a new AnimationSequenceController object.
@@ -35,17 +33,9 @@ package fr.nss.away4.core.animation.skeleton {
 		public function NSSSkeletonSequenceController() {
 			_sequences = [];
 		}
+		
 
-		public function get updateRootPosition() : Boolean
-		{
-			return _updateRootPosition;
-		}
-
-		public function set updateRootPosition(value : Boolean) : void
-		{
-			_updateRootPosition = value;
-		}
-
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -152,18 +142,17 @@ package fr.nss.away4.core.animation.skeleton {
 					//Logger.log(_activeClip.clip.name+"   "+_activeClip.clip.looping+"   "+_activeClip.time);
 				_animationState.invalidateState();
 				blendTree.updatePositionData();
-				if (_updateRootPosition) {
-					delta = blendTree.rootDelta;
+				delta = blendTree.rootDelta;
 
-					var dist : Number = delta.length;
-					var len : uint;
+				var dist : Number = delta.length;
+				var len : uint;
 
-					if (dist > 0) {
-						len = _targets.length;
-						for (var i : uint = 0; i < len; ++i)
-							_targets[i].translateLocal(delta, dist);
-					}
+				if (dist > 0) {
+					len = _targets.length;
+					for (var i : uint = 0; i < len; ++i)
+						_targets[i].translateLocal(delta, dist);
 				}
+			
 			}
 		}
 

@@ -1,13 +1,12 @@
 package fr.nss.away4.core.animation {
-	import away3d.arcane;
+	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.skeleton.JointPose;
 	import away3d.animators.skeleton.SkeletonPose;
-	import away3d.animators.data.SkeletonAnimationSequence;
+	import away3d.arcane;
 	import away3d.core.math.Quaternion;
 
 	import flash.geom.Vector3D;
-
-
+	
 	use namespace arcane;
 	/**
 	 * @author Seraf

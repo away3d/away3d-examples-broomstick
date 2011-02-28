@@ -1,10 +1,9 @@
 package fr.nss.away4.core.animation {
-	import away3d.arcane;
+	import away3d.animators.data.SkeletonAnimation;
 	import away3d.animators.skeleton.Joint;
 	import away3d.animators.skeleton.Skeleton;
-	import away3d.animators.data.SkeletonAnimation;
+	import away3d.arcane;
 	import away3d.core.base.Geometry;
-	import away3d.core.base.Object3D;
 	import away3d.core.base.SkinnedSubGeometry;
 	import away3d.core.math.Quaternion;
 	import away3d.entities.Mesh;
