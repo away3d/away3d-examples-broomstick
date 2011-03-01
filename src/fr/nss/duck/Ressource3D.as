@@ -27,8 +27,8 @@ package fr.nss.duck {
 	 * @author Seraf
 	 */
 	public class Ressource3D {
-		//[Embed(source="/../bin/duck/duckColor.png")]
-		//private var DuckTexture : Class;
+		[Embed(source="/../bin/duck/duckColor.png")]
+		private var DuckTexture : Class;
 		
 		public var duckEye01 : DuckEye;
 		public var duckBody : DuckBody;
@@ -99,7 +99,7 @@ package fr.nss.duck {
 			
 		}
 		private function getMaterial() : BitmapMaterial {
-			var material :BitmapMaterial  = new BitmapMaterial(new DuckBMP(0,0));
+			var material :BitmapMaterial  = new BitmapMaterial(new DuckTexture().bitmapData);
 			//var material : ColorMaterial = new ColorMaterial(0xCCCCCC );
 			material.ambientColor = 0xCCCCCC; //0xdd5525;
 			material.specular = .05;
