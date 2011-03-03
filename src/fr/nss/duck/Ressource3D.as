@@ -27,7 +27,7 @@ package fr.nss.duck {
 	 * @author Seraf
 	 */
 	public class Ressource3D {
-		[Embed(source="/../bin/duck/duckColor.png")]
+		[Embed(source="/../embeds/duck/duckColor.png")]
 		private var DuckTexture : Class;
 		
 		public var duckEye01 : DuckEye;

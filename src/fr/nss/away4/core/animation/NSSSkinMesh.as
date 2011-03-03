@@ -1,6 +1,6 @@
 package fr.nss.away4.core.animation {
 	import away3d.animators.data.SkeletonAnimation;
-	import away3d.animators.skeleton.Joint;
+	import away3d.animators.skeleton.SkeletonJoint;
 	import away3d.animators.skeleton.Skeleton;
 	import away3d.arcane;
 	import away3d.core.base.Geometry;
@@ -57,7 +57,7 @@ package fr.nss.away4.core.animation {
 			_bindPoses[boneIndex].appendTranslation(p.x,p.y,p.z);
 			var i:Matrix3D = _bindPoses[boneIndex].clone();
 			i.invert();
-			var joint:Joint=new Joint();
+			var joint:SkeletonJoint=new SkeletonJoint();
 			joint.name=boneName;
 			joint.parentIndex=parentIndex;
 			joint.inverseBindPose=i.rawData;
