@@ -112,11 +112,10 @@ package
 			material = new BitmapMaterial(new Albedo().bitmapData);
 			material.diffuseMethod = terrainMethod;
             material.normalMap = new Normals().bitmapData;
-            material.ambientColor = 0x101020;
+            material.ambientColor = 0x202030;
             material.specular = .2;
 
             fog = new FogMethod(4000, 0xcfd9de);
-//            fog.linearFallOff = false;
             material.addMethod(fog);
 
             _terrain = new HeightMapTerrain(material, new HeightMap().bitmapData, 5000, 1300, 5000, 175, 175);

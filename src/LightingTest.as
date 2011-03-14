@@ -31,8 +31,8 @@ package
 		private var _view : View3D;
 		private var _container : ObjectContainer3D;
 
-		private var _light : LightBase;
-		private var _light2 : LightBase;
+		private var _light : PointLight;
+		private var _light2 : PointLight;
 		private var _light3 : LightBase;
 		private var _mesh : Mesh;
 
@@ -40,16 +40,21 @@ package
 		{
 			_view = new View3D;
 			_light = new PointLight(); // DirectionalLight();
-//			_light.x = -5000;
-//			_light.y = 5000;
-			_light.z = 10000;
-
+			_light.x = -500;
+			_light.y = 500;
+			_light.z = 1000;
+//			_light.radius = 2000;
+//			_light.fallOff = 3000;
 			_light.color = 0xff1111;
+
 			_light2 = new PointLight(); // DirectionalLight();
-			_light2.x = 5000;
-			_light2.y = 5000;
-			_light2.z = -2000;
+			_light2.x = 500;
+			_light2.y = 500;
+			_light2.z = -200;
+//			_light2.radius = 2000;
+//			_light2.fallOff = 3000;
 			_light2.color = 0x1111ff;
+
 			_light3 = new DirectionalLight(0, -1, 1);
 			_light3.specular = 1;
 			_light3.diffuse = 1;
@@ -91,7 +96,7 @@ package
 			var material : ColorMaterial = new ColorMaterial(0xfff0dd);
 
 			material.gloss = 50;
-			material.lights = [_light2, _light, _light3];
+			material.lights = [_light, _light2, _light3];
 //			material.specularMethod = null;
 
 			for (var i : uint = 0; i < len; ++i) {

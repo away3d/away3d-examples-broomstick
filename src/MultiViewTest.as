@@ -197,12 +197,16 @@ package
 			_light.x = -1000;
 			_light.y = 200;
 			_light.z = -1400;
-			_light.color = 0xff8080;
+			_light.color = 0xff0000;
+			PointLight(_light).radius = 400;
+			PointLight(_light).fallOff = 1500;
 			_light2 = new PointLight(); // DirectionalLight();
 			_light2.x = 1000;
 			_light2.y = 200;
 			_light2.z = 1400;
-			_light2.color = 0x8080ff;
+			_light2.color = 0x0000ff;
+			PointLight(_light2).radius = 0;
+			PointLight(_light2).fallOff = 700;
 			_light3 = new DirectionalLight(0, -20, 10);
 			_light3.castsShadows = true;
 //			_light3.shadowMapper.depthMapSize = 2048;
@@ -212,11 +216,14 @@ package
 			_view1.scene.addChild(_light2);
 			_view1.scene.addChild(_light3);
 
-			_lights[0] = _light3;
-			_lights[1] = _light;
-			_lights[2] = _light2;
+			_lights[0] = _light;
+			_lights[1] = _light2;
+			_lights[2] = _light3;
 
-			_shadowMethod = new ShadowMethod(_light3);
+			if (ShadowMethod == HardShadowMapMethod)
+				_shadowMethod = new ShadowMethod(_light3);
+			else
+				_shadowMethod = new ShadowMethod(_light3, .001);
 
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;
@@ -344,8 +351,8 @@ package
 			_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x) * .03;
 			_targetLookAt.y = _targetLookAt.y + (mesh.y - _targetLookAt.y) * .03;
 			_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z) * .03;
+//			_view1.camera.lookAt(_light.position);
 			_view1.camera.lookAt(_targetLookAt);
-//			_view2.camera.lookAt(_targetLookAt);
 			_view3.camera.lookAt(mesh.position);
 
 			_count += .01;

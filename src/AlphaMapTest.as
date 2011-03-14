@@ -48,6 +48,7 @@ package
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			material.normalMap = new Normals().bitmapData;
 			material.ambientColor = 0x080820;
+//			material.transparent = true;
             material.diffuseMethod.alphaThreshold = .25;
 //            material.transparent = true;
 //			material.specularMethod = null;

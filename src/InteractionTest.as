@@ -49,6 +49,7 @@ package
 			_view.scene.addChild(_mesh1);
 			_view.scene.addChild(_mesh2);
 			_mesh1.rotationY = .01;
+			_mesh2.mouseEnabled = false;
 			_mesh1.mouseEnabled = true;
 			_mesh1.mouseDetails = true;
 			_mesh1.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
@@ -68,6 +69,7 @@ package
 
 		private function handleEnterFrame(ev : Event) : void
 		{
+			_mesh1.rotationX += .01;
 			_view.render();
 		}
 	}

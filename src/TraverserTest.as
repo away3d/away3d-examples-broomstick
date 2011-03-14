@@ -1,6 +1,10 @@
 package
 {
 	import away3d.containers.View3D;
+	import away3d.core.partition.Octree;
+	import away3d.core.partition.Partition3D;
+	import away3d.core.partition.QuadTree;
+	import away3d.core.partition.QuadTreeNode;
 	import away3d.core.render.PositionRenderer;
 	import away3d.debug.AwayStats;
 	import away3d.events.MouseEvent3D;
@@ -32,7 +36,7 @@ package
 	{
 		private var _planes : Vector.<Mesh>;
 		private var _view : View3D;
-		private var _numPlanes : int = 1000;
+		private var _numPlanes : int = 30000;
 
 		[Embed(source="/../embeds/set1/Diffuse Map.jpg")]
 		private var TextureAsset : Class;
@@ -55,9 +59,12 @@ package
 		private var _light3 : LightBase;
 		private var _materialLibrary : MaterialLibrary;
 
+		private var _partition : Partition3D;
+
 		public function TraverserTest()
 		{
 			Security.allowDomain("*");
+			_partition = new Octree(4, 50000);
 			stage.quality = StageQuality.HIGH;
 			initScene3D();
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -85,10 +92,10 @@ package
 		{
 			for (var i : int = 0; i < _numPlanes; ++i) {
 				var plane : Mesh = _planes[i];
-				plane.rotationX += .5;
+//				plane.rotationX += .5;
 				if (plane.extra.speed > .01)
 					plane.rotationY += plane.extra.speed;
-				plane.rotationZ += .4;
+//				plane.rotationZ += .4;
 				plane.extra.speed *= .98;
 			}
 
@@ -120,22 +127,24 @@ package
 			_materialName = _material2.name;
 			_planes = new Vector.<Mesh>();
 			_view = new View3D();
+			_view.antiAlias = 4;
 //			_view.depthPrepass = true;
-			var srcplane : Mesh = new Plane(_material1, 500, 500, 30, 30);
+			var srcplane : Mesh = new Plane(_material1, 100, 100, 30, 30);
 			for (var i : int = 0; i < _numPlanes; ++i) {
 				var plane : Mesh = Mesh(srcplane.clone());
 				plane.material = Math.random() > .5? _material1 : _material2;
 				plane.rotationX = Math.random()*360;
 				plane.rotationY = Math.random()*360;
 				plane.rotationZ = Math.random()*360;
-				plane.x = (Math.random()-.5)*10000;
-				plane.y = (Math.random()-.5)*10000;
-				plane.z = (Math.random()-.5)*10000;
+				plane.x = (Math.random()-.5)*50000;
+				plane.y = (Math.random()-.5)*50000;
+				plane.z = (Math.random()-.5)*50000;
 				plane.extra = { speed: 0 };
-				plane.mouseEnabled = true;
-				plane.mouseDetails = true;
+				plane.mouseEnabled = false;
+//				plane.mouseDetails = true;
 				plane.addEventListener(MouseEvent3D.MOUSE_MOVE, onPlaneMove);
 				plane.addEventListener(MouseEvent3D.CLICK, onPlaneClick);
+				plane.partition = _partition;
 				_view.scene.addChild(plane);
 				_view.scene.addChild(plane);
 				_planes.push(plane);
@@ -145,9 +154,6 @@ package
 			_view.camera.lens.far = 10000;
 			_view.backgroundColor = 0x000000;
 			addChild(_view);
-
-			if (Capabilities.os.toLowerCase().indexOf("windows") != -1)
-				_view.antiAlias = 4;
 
 			_light = new PointLight(); // DirectionalLight();
 			_light.color = 0xff1111;
