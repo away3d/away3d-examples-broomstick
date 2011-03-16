@@ -5,12 +5,14 @@ package
 	import away3d.containers.View3D;
 	import away3d.core.base.SubGeometry;
 	import away3d.debug.AwayStats;
+	import away3d.entities.TextureProjector;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.HardShadowMapMethod;
+	import away3d.materials.methods.ProjectiveTextureMethod;
 	import away3d.materials.methods.ShadingMethodBase;
 	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
@@ -63,7 +65,10 @@ package
 
 		[Embed(source="/../embeds/bluelight.png")]
 		private var BlueLight : Class;
-		
+
+		[Embed(source="/../embeds/shadowBlob.png")]
+		private var ShadowBlob : Class;
+
 		//signature variables
 		private var Signature:Sprite;
 		
@@ -84,10 +89,9 @@ package
 		private var _envMap : CubeMap;
 		private var _count : Number = 0;
 		private var _bmp : BitmapData;
-		private var ShadowMethod : Class = SoftShadowMapMethod; //HardShadowMapMethod;
-//		private var _shadowMethod : SoftShadowMapMethod;
-		private var _shadowMethod : ShadingMethodBase;
 		private var _lights : Array = [];
+		private var _projectionMethod : ProjectiveTextureMethod;
+		private var _projector : TextureProjector;
 
 		public function MultiViewTest()
 		{
@@ -99,10 +103,14 @@ package
 			_view1.scene.addChild(_controller.mesh);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view1.camera.lens.far * .5, 0x000000));
 			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.shadowMethod = _shadowMethod;
 			_controller.bodyMaterial.lights = _lights;
 			_controller.mesh.addChild(_view2.camera);
-			
+			_controller.mesh.addChild(_projector);
+//			_view1.scene.addChild(_projector);
+			_projector.y = 500;
+			_projector.z = -5;
+			_projector.fieldOfView = 15;
+
 			Signature = Sprite(new SignatureSwf());
 			Signature.x = 10;
 			Signature.y = stage.stageHeight - Signature.height - 10;
@@ -212,6 +220,9 @@ package
 //			_light3.shadowMapper.depthMapSize = 2048;
 			_light3.color = 0xffffff;
 
+			_projector = new TextureProjector(new ShadowBlob().bitmapData);
+			_projectionMethod = new ProjectiveTextureMethod(_projector);
+
 			_view1.scene.addChild(_light);
 			_view1.scene.addChild(_light2);
 			_view1.scene.addChild(_light3);
@@ -219,11 +230,6 @@ package
 			_lights[0] = _light;
 			_lights[1] = _light2;
 			_lights[2] = _light3;
-
-			if (ShadowMethod == HardShadowMapMethod)
-				_shadowMethod = new ShadowMethod(_light3);
-			else
-				_shadowMethod = new ShadowMethod(_light3, .001);
 
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;
@@ -244,12 +250,12 @@ package
 			_view1.scene.addChild(new SkyBox(_envMap));
 
 			material = new BitmapMaterial(new FloorDiffuse().bitmapData, true, true, true);
-			material.shadowMethod = _shadowMethod;
 			material.lights = _lights;
 			material.specular = 1;
 			material.ambientColor = 0x505060;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
+			material.addMethod(_projectionMethod);
 			material.addMethod(new FogMethod(_view1.camera.lens.far * .5, 0x000000));
 			var plane : Plane = new Plane(material, 50000, 50000, 150, 150, false);
 			plane.geometry.scaleUV(200);

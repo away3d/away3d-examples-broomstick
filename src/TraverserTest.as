@@ -36,7 +36,7 @@ package
 	{
 		private var _planes : Vector.<Mesh>;
 		private var _view : View3D;
-		private var _numPlanes : int = 30000;
+		private var _numPlanes : int = 9000;
 
 		[Embed(source="/../embeds/set1/Diffuse Map.jpg")]
 		private var TextureAsset : Class;
@@ -144,7 +144,10 @@ package
 //				plane.mouseDetails = true;
 				plane.addEventListener(MouseEvent3D.MOUSE_MOVE, onPlaneMove);
 				plane.addEventListener(MouseEvent3D.CLICK, onPlaneClick);
+
+				// comment out this line to see it work without partitioning
 				plane.partition = _partition;
+
 				_view.scene.addChild(plane);
 				_view.scene.addChild(plane);
 				_planes.push(plane);

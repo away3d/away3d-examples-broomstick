@@ -9,6 +9,7 @@ package
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.methods.FogMethod;
+	import away3d.materials.methods.HardShadowMapMethod;
 	import away3d.materials.methods.ShadingMethodBase;
 	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
@@ -78,7 +79,6 @@ package
 		private var _envMap : CubeMap;
 		private var _count : Number = 0;
 		private var ShadowMethod : Class = SoftShadowMapMethod;
-		private var _shadowMethod : ShadingMethodBase;
 		private var _lights : Array;
 
 		public function LoaderMD5Test()
@@ -92,7 +92,7 @@ package
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
 			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.shadowMethod = _shadowMethod;
+			_controller.bodyMaterial.addMethod(new ShadowMethod(_light3, 0x707090));
 			
 			Signature = Sprite(new SignatureSwf());
 			Signature.y = stage.stageHeight - Signature.height;
@@ -203,8 +203,6 @@ package
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
 			
-			_shadowMethod = new ShadowMethod(_light3);
-			
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;
 			material.transparent = true;
@@ -224,11 +222,11 @@ package
 			_view.scene.addChild(new SkyBox(_envMap));
 
 			material = new BitmapMaterial(new FloorDiffuse().bitmapData, true, true, true);
-			material.shadowMethod = _shadowMethod;
 			material.lights = _lights;
 			material.ambientColor = 0x202030;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
+			material.addMethod(new ShadowMethod(_light3, 0x707090));
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);
