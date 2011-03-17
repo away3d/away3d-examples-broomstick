@@ -76,15 +76,14 @@ package {
 			//Material ambientColor affect the contrast of the shadow 
 			planeMaterial.ambientColor = 0xCCCCCC;
 			//SoftShadowMapMethod step size is to change the neighbour filtering
-			planeMaterial.addMethod(new SoftShadowMapMethod(light, 0.0006));
+			planeMaterial.addMethod(new SoftShadowMapMethod(light, 0x808080, true, 0.0006));
 			var plane : Plane = new Plane(planeMaterial, 2000, 2000, 1, 1, false);
 		
 			plane.castsShadows=true; 
 			view.scene.addChild(plane);
 			
 			var material:ColorMaterial=new ColorMaterial(0xFFFF00 );
-			//material.shadowMethod=new SoftShadowMapMethod(light,0.0006);
-			material.addMethod(new SoftShadowMapMethod(light, 0.0006));
+			material.addMethod(new SoftShadowMapMethod(light, 0x808080, true, 0.0006));
 			material.lights = [light];
 			material.ambientColor = 0xCCCCCC;
 			var sphere:Sphere=new Sphere(material,50);
@@ -93,13 +92,13 @@ package {
 			view.scene.addChild(sphere);
 			
 			var material2:ColorMaterial=new ColorMaterial(0xFF0000 );
-			material2.addMethod(new SoftShadowMapMethod(light, 0.0006));
+			material2.addMethod(new SoftShadowMapMethod(light, 0x808080, true, 0.0006));
 			material2.lights = [light];
 			material2.ambientColor = 0xCCCCCC;
 			var sphere2:Sphere=new Sphere(material2,150);
 			sphere2.y=250;
 			sphere2.x=250;
-			//sphere2.castsShadows=true;
+			sphere2.castsShadows=true;
 			view.scene.addChild(sphere2);
 			
 		}

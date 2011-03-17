@@ -78,8 +78,9 @@ package
 		private var _targetLookAt : Vector3D;
 		private var _envMap : CubeMap;
 		private var _count : Number = 0;
-		private var ShadowMethod : Class = SoftShadowMapMethod;
 		private var _lights : Array;
+		private var _shadowMethod1 : SoftShadowMapMethod;
+		private var _shadowMethod2 : SoftShadowMapMethod;
 
 		public function LoaderMD5Test()
 		{
@@ -92,7 +93,7 @@ package
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
 			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.addMethod(new ShadowMethod(_light3, 0x707090));
+			_controller.bodyMaterial.addMethod(_shadowMethod2 = new SoftShadowMapMethod(_light3, 0x707090));
 			
 			Signature = Sprite(new SignatureSwf());
 			Signature.y = stage.stageHeight - Signature.height;
@@ -153,6 +154,9 @@ package
 				case Keyboard.RIGHT:
 					_controller.turn(1);
 					break;
+				case Keyboard.ESCAPE:
+					_shadowMethod1.dither = _shadowMethod2.dither = !_shadowMethod1.dither;
+					break;
 			}
 		}
 
@@ -177,7 +181,7 @@ package
 		{
 			var sprite : Sprite3D;
 			_view = new View3D();
-			_view.camera.lens.far = 2000;
+			_view.camera.lens.far = 10000;
 			_view.camera.z = -200;
 			_view.camera.y = 160;
 			_view.camera.lookAt(_targetLookAt = new Vector3D(0, 50, 0));
@@ -226,7 +230,7 @@ package
 			material.ambientColor = 0x202030;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
-			material.addMethod(new ShadowMethod(_light3, 0x707090));
+			material.addMethod(_shadowMethod1 = new SoftShadowMapMethod(_light3, 0x707090));
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);
