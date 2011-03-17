@@ -17,7 +17,7 @@ package
 	import flash.events.Event;
 	import flash.utils.getTimer;
 
-	[SWF(frameRate="60")]
+	[SWF(frameRate="60", width="1024", height="576")]
 	public class PrimitivesTest extends Sprite
 	{
 		private var _view : View3D;

@@ -17,7 +17,7 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 
-	[SWF(width="800", height="450", frameRate="60")]
+	[SWF(width="1024", height="576", frameRate="60")]
 	public class CelShadingTest extends Sprite
 	{
 		

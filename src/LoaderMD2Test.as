@@ -24,7 +24,7 @@ package
 	import flash.media.SoundTransform;
 	import flash.utils.setTimeout;
 
-	[SWF(width="800", height="450", frameRate="60", backgroundColor="0x000000")]
+	[SWF(width="1024", height="576", frameRate="60", backgroundColor="0x000000")]
     public class LoaderMD2Test extends Sprite
     {
         private var _view : View3D;
@@ -32,8 +32,10 @@ package
 
         [Embed(source="/../embeds/ogrespec.jpg")]
         private var Spec : Class;
+
         [Embed(source="/../embeds/ogrebump_NRM.png")]
         private var Norm : Class;
+
 		[Embed(source="/../embeds/audio.mp3")]
 		private var Audio : Class;
 
@@ -81,7 +83,8 @@ package
         public function LoaderMD2Test()
         {
             _resourceManager = ResourceManager.instance;
-            _view = new View3D;
+            _view = new View3D();
+			_view.antiAlias = 4;
 			_view.camera.lens.far = 30000;
             this.addChild(_view);
 

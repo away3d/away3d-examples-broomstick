@@ -368,9 +368,9 @@ package
 			_light2.x = -Math.sin(_count * .8) * 1500;
 			_light2.y = 250 - Math.sin(_count * .65) * 200;
 			_light2.z = -Math.cos(_count * .9) * 1500;
-			_view1.render(true);
-			_view2.render(false);
-			_view3.render(false);
+			_view1.render();
+			_view2.render();
+			_view3.render();
 		}
 	}
 }

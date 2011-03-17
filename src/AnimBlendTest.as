@@ -31,8 +31,8 @@ package
 	{
 		private var _view : View3D;
 
-		private var _light : LightBase;
-		private var _light2 : LightBase;
+		private var _light : PointLight;
+		private var _light2 : PointLight;
 		private var _light3 : LightBase;
 
 		private var _targetLookAt : Vector3D;
@@ -151,6 +151,7 @@ package
 				material.lights = [ _light2, _light3 ];
 				material.specular = 2;
 				material.transparent = true;
+				material.ambientColor = 0x202030;
 				_mesh.subMeshes[0].material = material;
 
 				material = new BitmapMaterial(new Skin().bitmapData);

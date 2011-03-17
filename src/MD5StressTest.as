@@ -30,7 +30,7 @@ package
 	import flash.text.TextField;
 	import flash.utils.setTimeout;
 
-	[SWF(width="800", height="450", frameRate="60")]
+	[SWF(width="1024", height="576", frameRate="60")]
 	public class MD5StressTest extends Sprite
 	{
 		private static const NUM_MESHES_X : Number = 5;

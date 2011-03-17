@@ -6,7 +6,7 @@ package
 	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.SmoothSkeletonAnimator;
 	import away3d.animators.data.SkeletonAnimation;
-	import away3d.events.AnimationEvent;
+	import away3d.events.AnimatorEvent;
 	import away3d.events.ResourceEvent;
 	import away3d.loading.ResourceManager;
 	import away3d.materials.BitmapMaterial;
@@ -156,14 +156,14 @@ package
 				_sequences[i].name = ANIM_NAMES[i];
 				_sequences[i].looping = ANIM_LOOPS[i];
 				if (!_sequences[i].looping)
-					_sequences[i].addEventListener(AnimationEvent.PLAYBACK_ENDED, onClipComplete);
+					_sequences[i].addEventListener(AnimatorEvent.SEQUENCE_DONE, onClipComplete);
 				_controller.addSequence(_sequences[i]);
 			}
 
 			stop();
 		}
 
-		private function onClipComplete(event : AnimationEvent) : void
+		private function onClipComplete(event : AnimatorEvent) : void
 		{
 			_onceAction = null;
 			_controller.play(_currentAction, XFADE_TIME);
