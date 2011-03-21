@@ -154,9 +154,9 @@ package
 				case Keyboard.RIGHT:
 					_controller.turn(1);
 					break;
-				case Keyboard.ESCAPE:
-					_shadowMethod1.dither = _shadowMethod2.dither = !_shadowMethod1.dither;
-					break;
+//				case Keyboard.ESCAPE:
+//					_shadowMethod1.dither = _shadowMethod2.dither = !_shadowMethod1.dither;
+//					break;
 			}
 		}
 
@@ -230,7 +230,7 @@ package
 			material.ambientColor = 0x202030;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
-			material.addMethod(_shadowMethod1 = new SoftShadowMapMethod(_light3, 0x707090));
+			material.shadowMethod = _shadowMethod1 = new SoftShadowMapMethod(_light3);
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);

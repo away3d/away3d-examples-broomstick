@@ -8,6 +8,7 @@ package
 	import away3d.lights.PointLight;
 	import away3d.loading.AssetLoader;
 	import away3d.loading.ResourceManager;
+	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
     import away3d.primitives.Plane;
     import away3d.primitives.Sphere;
@@ -22,11 +23,20 @@ package
 	import flash.events.MouseEvent;
 	import flash.net.URLRequest;
 
-	[SWF(width="800", height="450", frameRate="60")]
+	[SWF(width="1024", height="576", frameRate="60")]
 	public class LightingTest extends Sprite
 	{
 		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
 		private var OBJ : Class;
+
+		[Embed(source="/../embeds/head/Images/Map-COL.jpg")]
+		private var Albedo : Class;
+
+		[Embed(source="/../embeds/head/Images/Map-spec.jpg")]
+		private var Specular : Class;
+
+		[Embed(source="/../embeds/head/Images/Infinite-Level_02_Tangent_NoSmoothUV.jpg")]
+		private var Normal : Class;
 		
 		private var _view : View3D;
 		private var _container : ObjectContainer3D;
@@ -35,22 +45,24 @@ package
 		private var _light2 : PointLight;
 		private var _light3 : LightBase;
 		private var _mesh : Mesh;
+		private var _camController : HoverDragController;
 
 		public function LightingTest()
 		{
-			_view = new View3D;
+			_view = new View3D();
+			_view.antiAlias = 4;
 			_light = new PointLight(); // DirectionalLight();
-			_light.x = -500;
-			_light.y = 500;
-			_light.z = 1000;
+			_light.x = -5000;
+			_light.y = 5000;
+			_light.z = 10000;
 //			_light.radius = 2000;
 //			_light.fallOff = 3000;
 			_light.color = 0xff1111;
 
 			_light2 = new PointLight(); // DirectionalLight();
-			_light2.x = 500;
-			_light2.y = 500;
-			_light2.z = -200;
+			_light2.x = 5000;
+			_light2.y = 5000;
+			_light2.z = -10000;
 //			_light2.radius = 2000;
 //			_light2.fallOff = 3000;
 			_light2.color = 0x1111ff;
@@ -75,6 +87,8 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.RESIZE, onStageResize);
+
+			_camController = new HoverDragController(_view.camera, stage);
         }
 
 		private function onStageResize(event : Event) : void
@@ -93,8 +107,10 @@ package
 		{
 			var mesh : Mesh;
 			var len : uint = _container.numChildren;
-			var material : ColorMaterial = new ColorMaterial(0xfff0dd);
-
+			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
+			material.normalMap = new Normal().bitmapData;
+			material.specularMap = new Specular().bitmapData;
+			material.specular = .5;
 			material.gloss = 50;
 			material.lights = [_light, _light2, _light3];
 //			material.specularMethod = null;
@@ -111,7 +127,7 @@ package
 		
 		private function _handleEnterFrame(ev : Event) : void
 		{
-			_container.rotationY += 2;
+			_container.rotationY += 0.3;
 			_view.render();
 		}
 	}

@@ -25,7 +25,7 @@ package
 	import flash.events.Event;
 	import flash.net.URLRequest;
 
-	[SWF(width="800", height="450", frameRate="60")]
+	[SWF(width="1024", height="576", frameRate="60")]
 	public class SSSShadingTest extends Sprite
 	{
 		[Embed(source="/../embeds/envMap/arch_positive_x.jpg")]

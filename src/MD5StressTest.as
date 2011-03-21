@@ -179,7 +179,7 @@ package
 			material.lights = [ _light, _light2, _light3 ];
 			material.ambientColor = 0x101020;
 			material.specularMap = new Spec().bitmapData;
-			material.normalMap = new Norm().bitmapData;
+//			material.normalMap = new Norm().bitmapData;
             _sourceMesh.material = material;
 		}
 
