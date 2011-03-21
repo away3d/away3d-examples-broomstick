@@ -8,6 +8,7 @@ package
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
+	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.HardShadowMapMethod;
 	import away3d.materials.methods.ShadingMethodBase;
@@ -79,8 +80,8 @@ package
 		private var _envMap : CubeMap;
 		private var _count : Number = 0;
 		private var _lights : Array;
-		private var _shadowMethod1 : SoftShadowMapMethod;
-		private var _shadowMethod2 : SoftShadowMapMethod;
+		private var _shadowMethod : FilteredShadowMapMethod;
+		private var _shadowMethod2 : FilteredShadowMapMethod;
 
 		public function LoaderMD5Test()
 		{
@@ -93,8 +94,8 @@ package
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
 			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.addMethod(_shadowMethod2 = new SoftShadowMapMethod(_light3, 0x707090));
-			
+			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new FilteredShadowMapMethod(_light3);
+
 			Signature = Sprite(new SignatureSwf());
 			Signature.y = stage.stageHeight - Signature.height;
 			
@@ -154,9 +155,9 @@ package
 				case Keyboard.RIGHT:
 					_controller.turn(1);
 					break;
-//				case Keyboard.ESCAPE:
-//					_shadowMethod1.dither = _shadowMethod2.dither = !_shadowMethod1.dither;
-//					break;
+				case Keyboard.ESCAPE:
+					_shadowMethod2.hardEdges = _shadowMethod.hardEdges = !_shadowMethod.hardEdges;
+					break;
 			}
 		}
 
@@ -200,7 +201,7 @@ package
 			_light3 = new DirectionalLight(0, -20, 10);
 			_light3.color = 0xffffee;
 			_light3.castsShadows = true;
-			
+
 			_lights = [_light, _light2, _light3];
 
 			_view.scene.addChild(_light);
@@ -227,10 +228,10 @@ package
 
 			material = new BitmapMaterial(new FloorDiffuse().bitmapData, true, true, true);
 			material.lights = _lights;
-			material.ambientColor = 0x202030;
+			material.ambientColor = 0x505060;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
-			material.shadowMethod = _shadowMethod1 = new SoftShadowMapMethod(_light3);
+			material.shadowMethod = _shadowMethod = new FilteredShadowMapMethod(_light3);
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);
