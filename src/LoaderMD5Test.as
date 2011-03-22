@@ -229,7 +229,7 @@ package
 
 			material = new BitmapMaterial(new FloorDiffuse().bitmapData, true, true, true);
 			material.lights = _lights;
-			material.ambientColor = 0x808090;
+			material.ambientColor = 0x202030;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
 			material.shadowMethod = _shadowMethod = new SlowFilteredShadowMapMethod(_light3);
