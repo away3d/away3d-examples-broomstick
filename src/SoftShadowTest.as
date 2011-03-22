@@ -4,6 +4,7 @@ package {
 	import away3d.debug.AwayStats;
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.methods.SlowFilteredShadowMapMethod;
 	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.primitives.Plane;
 	import away3d.primitives.Sphere;
@@ -76,7 +77,7 @@ package {
 			//Material ambientColor affect the contrast of the shadow 
 			planeMaterial.ambientColor = 0xCCCCCC;
 			//SoftShadowMapMethod step size is to change the neighbour filtering
-			planeMaterial.shadowMethod = new SoftShadowMapMethod(light);
+			planeMaterial.shadowMethod = new SlowFilteredShadowMapMethod(light);//new SoftShadowMapMethod(light);
 			var plane : Plane = new Plane(planeMaterial, 2000, 2000, 1, 1, false);
 		
 			plane.castsShadows=true; 
