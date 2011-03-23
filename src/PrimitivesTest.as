@@ -1,6 +1,7 @@
 package
 {
 	import away3d.containers.View3D;
+	import away3d.debug.Debug;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
@@ -46,6 +47,8 @@ package
 			
 			_ctr = new ObjectContainer3D();
 			_view.scene.addChild(_ctr);
+
+			Debug.active = true;
 
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			material.normalMap = new Normals().bitmapData;
