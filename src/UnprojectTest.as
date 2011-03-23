@@ -20,7 +20,7 @@ package
 	import flash.utils.getTimer;
 
 	[SWF(frameRate="60", width="1024", height="576")]
-	public class PivotTest extends Sprite
+	public class UnprojectTest extends Sprite
 	{
 		private var _view : View3D;
 		
@@ -34,10 +34,9 @@ package
 		private var Normals : Class;
 
 		private var _camController : HoverDragController;
-		private var _cube : Cube;
 		private var _sphere : Sphere;
 
-		public function PivotTest()
+		public function UnprojectTest()
 		{
 			super();
 			
@@ -46,24 +45,18 @@ package
 			_camController.radius = 500;
 
 			addChild(_view);
-			addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
+			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			material.normalMap = new Normals().bitmapData;
 			material.ambientColor = 0x080820;
 //			material.specularMethod = null;
 
-			_cube = new Cube(material, 100, 100, 100, 11, 7, 25, false);
-//			_cube.scaleX = 1.5;
-//			_cube.scaleY = 1.2;
-//			_cube.scaleZ = 1.3;
 			material.normalMap;
-			_cube.pivotPoint = new Vector3D(-50, -50, -50);
 			_sphere = new Sphere(new ColorMaterial(0xff00ff), 5);
 			_sphere.x = -50;
 			_sphere.y = -50;
 			_sphere.z = -50;
-			_view.scene.addChild(_cube);
 			_view.scene.addChild(_sphere);
 
 			_light = new PointLight();
@@ -86,12 +79,19 @@ package
 		}
 		
 		
-		private function _handleEnterFrame(ev : Event) : void
+		private function handleEnterFrame(ev : Event) : void
 		{
 			//_ctr.rotationX = 20 * Math.sin(getTimer() * 0.002);
-			_cube.rotationX += .1;
-			_cube.rotationY += .11;
-			_cube.rotationZ += .09;
+			_view.camera.x = Math.random()*5000;
+			_view.camera.y = Math.random()*5000;
+			_view.camera.z = Math.random()*5000;
+			_view.camera.rotationX = Math.random()*6;
+			_view.camera.rotationY = Math.random()*6;
+			_view.camera.rotationZ = Math.random()*6;
+			var v : Vector3D = _view.unproject(_view.mouseX, _view.mouseY);
+			_sphere.x = _view.camera.x+(v.x-_view.camera.x)*20;
+			_sphere.y = _view.camera.y+(v.y-_view.camera.y)*20;
+			_sphere.z = _view.camera.z+(v.z-_view.camera.z)*20;
 			_view.render();
 		}
 	}
