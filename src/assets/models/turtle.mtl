@@ -1,0 +1,8 @@
+newmtl awmat_0
+Kd 1 1 1
+Ka 0.2 0.2 0.2
+Ks 0.2 0.2 0.2
+Ns 128
+Tr 1
+D 1
+map_Kd images/aw_0.jpg
