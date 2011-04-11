@@ -34,7 +34,7 @@ package
 			
 			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
 			//_container = ObjectContainer3D(ResourceManager.instance.parseData(new AWDAsset, "awdasset", true, AWD2Parser));
-			_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../AWD/Dev/sdks/python-pyawd/bindtest.awd', false, AWD2Parser));
+			_container = ObjectContainer3D(ResourceManager.instance.getResource('assets/bindtest.awd', false, AWD2Parser));
 			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout.awd', false, AWD2Parser));
 			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout-truckstop.awd', false, AWD2Parser));
 			_container.scale(20);
