@@ -46,13 +46,13 @@ package
 			_ctr = new ObjectContainer3D();
 			_view.scene.addChild(_ctr);
 
+			var green : ColorMaterial = new ColorMaterial(0x00FF00);
+			var red : ColorMaterial = new ColorMaterial(0xFF0000);
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 			material.normalMap = new Normals().bitmapData;
 			material.ambientColor = 0x080820;
-//                      material.specularMethod = null;
 
-			var green : ColorMaterial = new ColorMaterial(0x00FF00);
-			var red : ColorMaterial = new ColorMaterial(0xFF0000);
+//                      material.specularMethod = null;
 //			var green : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			var red : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			green.normalMap = new Normals().bitmapData;
