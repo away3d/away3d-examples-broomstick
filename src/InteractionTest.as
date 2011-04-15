@@ -34,7 +34,12 @@ package
 
 		public function InteractionTest()
 		{
-			_view = new View3D;
+			_view = new View3D();
+			_view.x = 100;
+			_view.y = 50;
+			_view.width = 600;
+			_view.height = 300;
+
 			_view.antiAlias = 4;
 			this.addChild(_view);
 
