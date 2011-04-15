@@ -6,6 +6,7 @@ package
 	import away3d.entities.Sprite3D;
 	import away3d.filters.BloomFilter3D;
 	import away3d.filters.BlurFilter3D;
+	import away3d.filters.MotionBlurFilter3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
@@ -185,7 +186,7 @@ package
 		{
 			var sprite : Sprite3D;
 			_view = new View3D();
-			_view.filters3d = [ new BloomFilter3D(200, 200, .35, 1.25) ];
+			_view.filters3d = [ new MotionBlurFilter3D(.8) ];
 			_view.camera.lens.far = 5000;
 			_view.camera.z = -200;
 			_view.camera.y = 160;
