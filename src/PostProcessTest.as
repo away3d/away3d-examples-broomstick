@@ -4,24 +4,17 @@ package
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
 	import away3d.entities.Sprite3D;
-	import away3d.filters.BloomFilter3D;
-	import away3d.filters.BlurFilter3D;
 	import away3d.filters.MotionBlurFilter3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
-	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.FogMethod;
-	import away3d.materials.methods.HardShadowMapMethod;
-	import away3d.materials.methods.ShadingMethodBase;
 	import away3d.materials.methods.SlowFilteredShadowMapMethod;
-	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
-	
-	import flash.display.BlendMode;
+
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -65,14 +58,14 @@ package
 
 		[Embed(source="/../embeds/bluelight.png")]
 		private var BlueLight : Class;
-		
+
 		//signature variables
-		private var Signature:Sprite;
-		
+		private var Signature : Sprite;
+
 		//signature swf
 		[Embed(source="/../embeds/signature_david.swf", symbol="Signature")]
-		private var SignatureSwf:Class;
-		
+		private var SignatureSwf : Class;
+
 		private var _view : View3D;
 
 		private var _light : LightBase;
@@ -95,16 +88,16 @@ package
 			initView();
 			_controller = new MonsterController();
 			_view.scene.addChild(_controller.mesh);
-			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
+			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
 			_controller.bodyMaterial.lights = _lights;
 			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new SlowFilteredShadowMapMethod(_light3);
 
 			Signature = Sprite(new SignatureSwf());
 			Signature.y = stage.stageHeight - Signature.height;
-			
+
 			addChild(Signature);
-			
+
 			stage.addEventListener(Event.RESIZE, onStageResize);
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -212,23 +205,23 @@ package
 			_view.scene.addChild(_light);
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
-			
+
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;
 			material.transparent = true;
-			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
+			material.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 			sprite = new Sprite3D(material, 200, 200);
 			_light.addChild(sprite);
 			material = new BitmapMaterial(new BlueLight().bitmapData);
 			sprite = new Sprite3D(material, 200, 200);
-			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
+			material.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			material.blendMode = BlendMode.ADD;
 			material.transparent = true;
 			_light2.addChild(sprite);
 
-			_envMap = new CubeMap(	new EnvPosX().bitmapData,  new EnvNegX().bitmapData,
-									new EnvPosY().bitmapData,  new EnvNegY().bitmapData,
-									new EnvPosZ().bitmapData,  new EnvNegZ().bitmapData);
+			_envMap = new CubeMap(new EnvPosX().bitmapData, new EnvNegX().bitmapData,
+					new EnvPosY().bitmapData, new EnvNegY().bitmapData,
+					new EnvPosZ().bitmapData, new EnvNegZ().bitmapData);
 			_view.scene.addChild(new SkyBox(_envMap));
 
 			material = new BitmapMaterial(new FloorDiffuse().bitmapData, true, true, true);
@@ -237,13 +230,13 @@ package
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
 			material.shadowMethod = _shadowMethod = new SlowFilteredShadowMapMethod(_light3);
-			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
+			material.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);
 			plane.geometry.scaleUV(200);
 			plane.castsShadows = false;
 			_view.scene.addChild(plane);
-			
+
 			_view.width = 1024;
 			_view.height = 576;
 			_view.antiAlias = 4;
@@ -253,7 +246,7 @@ package
 		{
 			_view.width = stage.stageWidth;
 			_view.height = stage.stageHeight;
-			
+
 			Signature.y = stage.stageHeight - Signature.height;
 		}
 
@@ -261,18 +254,18 @@ package
 		{
 			var mesh : Mesh = _controller.mesh;
 			_controller.update();
-			_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x)*.03;
-			_targetLookAt.y = _targetLookAt.y + (mesh.y + 50 - _targetLookAt.y)*.03;
-			_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z)*.03;
+			_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x) * .03;
+			_targetLookAt.y = _targetLookAt.y + (mesh.y + 50 - _targetLookAt.y) * .03;
+			_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z) * .03;
 			_view.camera.lookAt(_targetLookAt);
 
 			_count += .01;
-			_light.x = Math.sin(_count)*1500;
-			_light.y = 250+Math.sin(_count*.54)*200;
-			_light.z = Math.cos(_count*.7)*1500;
-			_light2.x = -Math.sin(_count*.8)*1500;
-			_light2.y = 250-Math.sin(_count*.65)*200;
-			_light2.z = -Math.cos(_count*.9)*1500;
+			_light.x = Math.sin(_count) * 1500;
+			_light.y = 250 + Math.sin(_count * .54) * 200;
+			_light.z = Math.cos(_count * .7) * 1500;
+			_light2.x = -Math.sin(_count * .8) * 1500;
+			_light2.y = 250 - Math.sin(_count * .65) * 200;
+			_light2.z = -Math.cos(_count * .9) * 1500;
 			_view.render();
 		}
 	}
