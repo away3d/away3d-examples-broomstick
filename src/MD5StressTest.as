@@ -12,7 +12,7 @@ package
 	import away3d.lights.PointLight;
 	import away3d.loading.ResourceManager;
 	import away3d.materials.BitmapMaterial;
-	
+
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -99,7 +99,7 @@ package
 			//			_light3.diffuse = .25;
 			//			_light3.specular = .25;
 			_light3.color = 0xffeeaa;
-			
+
 			_view.scene.addChild(_light);
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
