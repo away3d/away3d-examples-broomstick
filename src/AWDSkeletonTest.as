@@ -34,8 +34,8 @@ package
 			
 			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
 			//_container = ObjectContainer3D(ResourceManager.instance.parseData(new AWDAsset, "awdasset", true, AWD2Parser));
-			_container = ObjectContainer3D(ResourceManager.instance.getResource('assets/bindtest.awd', false, AWD2Parser));
-			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout.awd', false, AWD2Parser));
+			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../AWD/Dev/sdks/python-pyawd/bindtest.awd', false, AWD2Parser));
+			_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout.awd', false, new AWD2Parser('')));
 			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout-truckstop.awd', false, AWD2Parser));
 			_container.scale(20);
 			//_container.y = -300;
@@ -55,7 +55,7 @@ package
 				bmp.perlinNoise(10, 10, 10, 0, false, false, 7, true);
 				
 				for (var i : int = 0; i<_container.numChildren; i++) {
-					var mat : ColorMaterial = new ColorMaterial(Math.random() * 0x444444);
+					var mat : ColorMaterial = new ColorMaterial(0xffcc00);
 					mat.bothSides = true;
 					Mesh(_container.getChildAt(i)).material = mat;
 				}
@@ -73,6 +73,7 @@ package
 		{
 			_container.rotationY += 0.1;
 			//_view.camera.y = 300 + 200 * Math.sin(getTimer() * 0.001);
+			//_view.camera.lookAt(_container.position);
 			_view.camera.y = 100;
 			_view.camera.lookAt(new Vector3D());
 			_view.render();
