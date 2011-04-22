@@ -2,6 +2,7 @@ package
 {
 	import away3d.animators.SmoothSkeletonAnimator;
 	import away3d.animators.data.SkeletonAnimationSequence;
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
@@ -18,6 +19,7 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.text.TextField;
+	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
 	[SWF(width="1024", height="576", frameRate="60")]
@@ -65,50 +67,63 @@ package
 		private var _meshes : Vector.<Mesh>;
 		private var _textField : TextField;
 		private var _resourceCount : int;
+		private var _animators : Dictionary;
 		
 		public function MD5StressTest()
 		{
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.align = StageAlign.TOP_LEFT;
+			stage.addEventListener(Event.RESIZE, onStageResize);
+
+			initAway3D();
+			initUI();
+			
+			loadResources();
+
+			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
+		}
+
+		private function initAway3D() : void
+		{
 			_view = new View3D();
+			addChild(_view);
 			addChild(new AwayStats(_view));
-			
-			_textField = new TextField();
-			_textField.width = 200;
-			_textField.x = stage.stageWidth-200;
-			_textField.y = 20;
-			_textField.textColor = 0xffffff;
-			_textField.text = "Loading MD5 Mesh...";
-			addChild(_textField);
-			
-			Signature = Sprite(new SignatureSwf());
-			Signature.y = stage.stageHeight - Signature.height;
-			
-			addChild(Signature);
-			
+
 			_light = new PointLight(); // DirectionalLight();
-			this.addChild(_view);
 			_light.x = -5000;
 			_light.y = 1000;
 			_light.z = 7000;
 			_light.color = 0xff1111;
+
 			_light2 = new PointLight(); // DirectionalLight();
 			_light2.x = 5000;
 			_light2.y = 1000;
 			_light2.z = 7000;
 			_light2.color = 0x1111ff;
 			_light3 = new DirectionalLight(0, 50, 1);
-			//			_light3.diffuse = .25;
-			//			_light3.specular = .25;
+			// _light3.diffuse = .25;
+			// _light3.specular = .25;
 			_light3.color = 0xffeeaa;
 
 			_view.scene.addChild(_light);
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
-			
-			loadResources();
-			this.addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			stage.addEventListener(Event.RESIZE, onStageResize);
+		}
+
+		private function initUI() : void
+		{
+			_textField = new TextField();
+			_textField.width = 200;
+			_textField.x = stage.stageWidth - 200;
+			_textField.y = 20;
+			_textField.textColor = 0xffffff;
+			_textField.text = "Loading MD5 Mesh...";
+			addChild(_textField);
+
+			Signature = Sprite(new SignatureSwf());
+			Signature.y = stage.stageHeight - Signature.height;
+
+			addChild(Signature);
 		}
 		
 		private function onStageResize(event : Event) : void
@@ -122,12 +137,10 @@ package
 		private function loadResources() : void
 		{
 			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-			
+
 			_sourceMesh = Mesh(ResourceManager.instance.getResource("assets/" + MESH_NAME+"/"+MESH_NAME+".md5mesh"));
 			_sourceMesh.y = 0;
 			_sourceMesh.scale(3);
-			
-			loadAnimations();
 		}
 		
 		private function loadAnimations() : void
@@ -135,7 +148,8 @@ package
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
 				var seq : SkeletonAnimationSequence = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MESH_NAME+"/"+ANIM_NAMES[i]+".md5anim"));
 				seq.name = ANIM_NAMES[i];
-				SmoothSkeletonAnimator(_sourceMesh.animationController).addSequence(seq);
+				for (var j : uint = 0; j < _meshes.length; ++j)
+					_animators[_meshes[j]].addSequence(seq);
 			}
 		}
 		
@@ -144,16 +158,17 @@ package
 			if (event.resource == _sourceMesh) {
 				initMaterials();
 				cloneMeshes();
+				loadAnimations();
 			}
 			
 			_textField.text = "Retrieved resource "+event.resource.name;
 			
 			if (++_resourceCount > ANIM_NAMES.length) {
 				_textField.text = "All resources retrieved";
-				
+
 				// start animations randomly
 				for (var i : uint = 0; i < _meshes.length; ++i)
-					setTimeout(SmoothSkeletonAnimator(_meshes[i].animationController).play, Math.random()*3000, ANIM_NAMES[int(Math.random()*ANIM_NAMES.length)]);
+					setTimeout(_animators[_meshes[i]].play, Math.random()*3000, ANIM_NAMES[int(Math.random()*ANIM_NAMES.length)]);
 			}
 		}
 		
@@ -169,24 +184,28 @@ package
 			material.lights = [ _light, _light2, _light3 ];
 			material.ambientColor = 0x101020;
 			material.specularMap = new Spec().bitmapData;
-			//			material.normalMap = new Norm().bitmapData;
+			material.normalMap = new Norm().bitmapData;
 			_sourceMesh.material = material;
 		}
 		
 		private function cloneMeshes() : void
 		{
-			_meshes = new Vector.<Mesh>();
-			_container = new ObjectContainer3D();
 			var i : int;
 			var clone : Mesh;
+
+			_animators = new Dictionary();
+			_meshes = new Vector.<Mesh>();
+			_container = new ObjectContainer3D();
+
 			for (var x : int = 0; x < NUM_MESHES_X; ++x) {
-				for (var y : int = 0; y < NUM_MESHES_X; ++y) {
-					for (var z : int = 0; z < NUM_MESHES_X; ++z) {
+				for (var y : int = 0; y < NUM_MESHES_Y; ++y) {
+					for (var z : int = 0; z < NUM_MESHES_Z; ++z) {
 						clone = Mesh(_sourceMesh.clone());
 						_meshes[i++] = clone;
 						clone.x = (x-(NUM_MESHES_X-1)*.5)*SPACING_X;
 						clone.y = (y-(NUM_MESHES_Y-1)*.5)*SPACING_Y;
 						clone.z = (z-(NUM_MESHES_Z-1)*.5)*SPACING_Z;
+						_animators[clone] = new SmoothSkeletonAnimator(SkeletonAnimationState(clone.animationState));
 						_container.addChild(clone);
 					}
 				}
@@ -195,11 +214,11 @@ package
 			_view.scene.addChild(_container);
 		}
 		
-		private function _handleEnterFrame(ev : Event) : void
+		private function handleEnterFrame(ev : Event) : void
 		{
 			if (_container) _container.rotationY = _count;
-			_view.render();
 			_count += 1;
+			_view.render();
 		}
 	}
 }

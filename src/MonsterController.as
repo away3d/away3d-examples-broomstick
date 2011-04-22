@@ -5,7 +5,7 @@ package
 {
 	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.SmoothSkeletonAnimator;
-	import away3d.animators.data.SkeletonAnimation;
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.events.AnimatorEvent;
 	import away3d.events.ResourceEvent;
 	import away3d.loading.ResourceManager;
@@ -58,7 +58,6 @@ package
 			_timeScale = timeScale;
 			initMaterials();
 			initMesh();
-			initAnimation();
 		}
 
 		public function turn(dir : Number) : void
@@ -142,25 +141,34 @@ package
 
 		private function initMesh() : void
 		{
-			_mesh = Mesh(ResourceManager.instance.getResource("assets/" + MD5_DIR + "/" + MESH_NAME + ".md5mesh"));
+			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
+			_mesh = Mesh(ResourceManager.instance.getResource("assets/" + MD5_DIR + "/" + MESH_NAME + ".md5mesh"));;
 			_mesh.material = _bodyMaterial;
+		}
+
+		private function onResourceRetrieved(event : ResourceEvent) : void
+		{
+			if (event.resource == _mesh)
+				initAnimation();
+			else {
+				_controller.addSequence(SkeletonAnimationSequence(event.resource));
+				if (event.resource.name == IDLE_NAME) stop();
+			}
 		}
 
 		private function initAnimation() : void
 		{
-			_controller = SmoothSkeletonAnimator(_mesh.animationController);
+			_controller = new SmoothSkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
 			_controller.timeScale = _timeScale;
 
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
 				_sequences[i] = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MD5_DIR + "/" + ANIM_NAMES[i] + ".md5anim"));
 				_sequences[i].name = ANIM_NAMES[i];
 				_sequences[i].looping = ANIM_LOOPS[i];
+
 				if (!_sequences[i].looping)
 					_sequences[i].addEventListener(AnimatorEvent.SEQUENCE_DONE, onClipComplete);
-				_controller.addSequence(_sequences[i]);
 			}
-
-			stop();
 		}
 
 		private function onClipComplete(event : AnimatorEvent) : void

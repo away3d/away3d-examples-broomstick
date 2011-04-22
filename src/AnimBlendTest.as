@@ -1,5 +1,6 @@
 package
 {
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.arcane;
 	import away3d.containers.View3D;
 	import away3d.animators.BlendingSkeletonAnimator;
@@ -75,13 +76,6 @@ package
 			loadResources();
 			initControls();
 			
-			Signature = Sprite(new SignatureSwf());
-			Signature.y = stage.stageHeight - Signature.height;
-			
-			addChild(Signature);
-			
-			addChild(new AwayStats(_view));
-			
 			stage.addEventListener(Event.RESIZE, onStageResize);
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 
@@ -134,12 +128,10 @@ package
 			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
 
 			_mesh = Mesh(ResourceManager.instance.getResource("assets/" + MESH_NAME + "/" + MESH_NAME + ".md5mesh"));
-			_mesh.animationController = _animationController = new BlendingSkeletonAnimator();
 			_mesh.y = 0;
 			_mesh.scale(25);
 			_view.scene.addChild(_mesh);
 
-			loadAnimations();
 		}
 
 		private function onResourceRetrieved(event : ResourceEvent) : void
@@ -147,6 +139,7 @@ package
 			var diffClip : SkeletonAnimationSequence;
 
 			if (event.resource == _mesh) {
+				_animationController = new BlendingSkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
 				var material : BitmapMaterial = new BitmapMaterial(new Teeth().bitmapData);
 				material.lights = [ _light2, _light3 ];
 				material.specular = 2;
@@ -162,12 +155,13 @@ package
 				material.specularMap = new Spec().bitmapData;
 				material.normalMap = new Norm().bitmapData;
 				_mesh.material = material;
+				loadAnimations();
 			}
 			else if(event.resource.name == ANIM_NAMES[0]) {
 				diffClip = SkeletonUtils.generateDifferenceClip(	SkeletonAnimationSequence(event.resource),
 																	SkeletonAnimationSequence(event.resource)._frames[0]);
 				diffClip.name = "additionClip";
-				BlendingSkeletonAnimator(_mesh.animationController).addSequence(diffClip);
+				_animationController.addSequence(diffClip);
 				ANIM_NAMES[5] = diffClip.name;
 			}
 		}
@@ -177,15 +171,14 @@ package
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
 				var seq : SkeletonAnimationSequence = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MESH_NAME + "/" + ANIM_NAMES[i] + ".md5anim"));
 				seq.name = ANIM_NAMES[i];
-				BlendingSkeletonAnimator(_mesh.animationController).addSequence(seq);
+				_animationController.addSequence(seq);
+				if (i == 0) _animationController.play();
 			}
 		}
 
 		private function initView() : void
 		{
 			_view = new View3D();
-//			_view.camera.z = -200;
-//			_view.camera.y = 160;
 			_view.camera.lookAt(_targetLookAt = new Vector3D());
 			addChild(new AwayStats(_view));
 			_light = new PointLight(); // DirectionalLight();
@@ -203,6 +196,12 @@ package
 			_view.scene.addChild(_light3);
 
 			_camController = new HoverDragController(_view.camera, stage);
+
+			Signature = Sprite(new SignatureSwf());
+			Signature.y = stage.stageHeight - Signature.height;
+			addChild(Signature);
+
+			addChild(new AwayStats(_view));
 		}
 
 		private function onStageResize(event : Event) : void

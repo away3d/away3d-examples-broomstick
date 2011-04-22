@@ -90,22 +90,23 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 
 			initView();
-			_controller = new MonsterController();
-			_view.scene.addChild(_controller.mesh);
-			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
-//			_controller.bodyMaterial.specularMethod = null;
-			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new SlowFilteredShadowMapMethod(_light3);
+			initMesh();
 
-			Signature = Sprite(new SignatureSwf());
-			Signature.y = stage.stageHeight - Signature.height;
-			
 			addChild(Signature);
 			
 			stage.addEventListener(Event.RESIZE, onStageResize);
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		}
+
+		private function initMesh() : void
+		{
+			_controller = new MonsterController();
+			_view.scene.addChild(_controller.mesh);
+			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
+			_controller.bodyMaterial.lights = _lights;
+			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new SlowFilteredShadowMapMethod(_light3);
 		}
 
 		private function onKeyDown(event : KeyboardEvent) : void
@@ -189,7 +190,7 @@ package
 			_view.camera.lookAt(_targetLookAt = new Vector3D(0, 50, 0));
 			addChild(new AwayStats(_view));
 			_light = new PointLight(); // DirectionalLight();
-			this.addChild(_view);
+			addChild(_view);
 			_light.x = -1000;
 			_light.y = 200;
 			_light.z = -1400;
@@ -243,6 +244,9 @@ package
 			_view.width = 1024;
 			_view.height = 576;
 			_view.antiAlias = 4;
+
+			Signature = Sprite(new SignatureSwf());
+			Signature.y = stage.stageHeight - Signature.height;
 		}
 
 		private function onStageResize(event : Event) : void

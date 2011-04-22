@@ -1,5 +1,9 @@
 package
 {
+	import away3d.animators.SkeletonAnimator;
+	import away3d.animators.data.SkeletonAnimation;
+	import away3d.animators.data.SkeletonAnimationSequence;
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.containers.View3D;
 	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.SmoothSkeletonAnimator;
@@ -29,6 +33,7 @@ package
 		public static const ANIM_NAME : String = "idle1";
 
 		private var _mesh : Mesh;
+		private var _animationController : SkeletonAnimator;
 
 		public function WireframeTest()
 		{
@@ -77,8 +82,11 @@ package
 
 				var seq : SkeletonAnimationSequence = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MESH_NAME + "/" + ANIM_NAME + ".md5anim"));
 				seq.name = ANIM_NAME;
-				SmoothSkeletonAnimator(_mesh.animationController).addSequence(seq);
-				SmoothSkeletonAnimator(_mesh.animationController).play(ANIM_NAME);
+			}
+			else {
+				_animationController = new SkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
+				_animationController.addSequence(SkeletonAnimationSequence(ev.resource));
+				_animationController.play(ANIM_NAME);
 			}
 		}
 

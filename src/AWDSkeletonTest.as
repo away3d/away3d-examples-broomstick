@@ -35,7 +35,7 @@ package
 			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
 			//_container = ObjectContainer3D(ResourceManager.instance.parseData(new AWDAsset, "awdasset", true, AWD2Parser));
 			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../AWD/Dev/sdks/python-pyawd/bindtest.awd', false, AWD2Parser));
-			_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout.awd', false, new AWD2Parser('')));
+			_container = ObjectContainer3D(ResourceManager.instance.getResource('assets/mayaout-toomanyjoints.awd', false, new AWD2Parser('')));
 			//_container = ObjectContainer3D(ResourceManager.instance.getResource('../../../../../../../Desktop/mayaout-truckstop.awd', false, AWD2Parser));
 			_container.scale(20);
 			//_container.y = -300;
@@ -59,8 +59,9 @@ package
 					mat.bothSides = true;
 					Mesh(_container.getChildAt(i)).material = mat;
 				}
-				
-				SkeletonAnimator(Mesh(_container.getChildAt(0)).animationController).play("hardcoded");
+
+				// todo: change this
+				//SkeletonAnimator(Mesh(_container.getChildAt(0)).animationController).play("hardcoded");
 				
 				//Mesh(_container.getChildAt(0)).material = new BitmapMaterial(BitmapAsset(new GroundTextureAsset).bitmapData);
 				//Mesh(_container.getChildAt(1)).material = new BitmapMaterial(BitmapAsset(new ObjectsTextureAsset).bitmapData);

@@ -3,6 +3,7 @@ package
 	import away3d.animators.VertexAnimator;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
+	import away3d.events.ResourceEvent;
 	import away3d.loading.ResourceManager;
 	import away3d.materials.DefaultMaterialBase;
 	import away3d.materials.methods.EnvMapDiffuseMethod;
@@ -67,33 +68,35 @@ package
 		[Embed(source="/../embeds/diffuseEnvMap/night_m04_negZ.jpg")]
 		private var DiffNegZ : Class;
 		
-		private var _resourceManager : ResourceManager;
 		private var _envMap : CubeMap;
-		private var _diffuseMap : CubeMap;
 		private var _timeScale : Number = 3;
 		
 		public function LoaderMD2Test()
 		{
-			_resourceManager = ResourceManager.instance;
-			_view = new View3D();
-			_view.antiAlias = 4;
-			_view.camera.lens.far = 30000;
-			this.addChild(_view);
-			
+			init3D();
+
 			Sound(new Audio()).play(0, int.MAX_VALUE, new SoundTransform(.25));
-			_envMap = new CubeMap(	new EnvPosX().bitmapData,  new EnvNegX().bitmapData,
-				new EnvPosY().bitmapData,  new EnvNegY().bitmapData,
-				new EnvPosZ().bitmapData,  new EnvNegZ().bitmapData);
-			_diffuseMap = new CubeMap(	new DiffPosX().bitmapData,  new DiffNegX().bitmapData,
-				new DiffPosY().bitmapData,  new DiffNegY().bitmapData,
-				new DiffPosZ().bitmapData,  new DiffNegZ().bitmapData);
-			_view.scene.addChild(new SkyBox(_envMap));
+
 			initMesh();
-			initAnimation();
-			this.addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
+
+			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.RESIZE, onStageResize);
+		}
+
+		private function init3D() : void
+		{
+			_view = new View3D();
+			_view.antiAlias = 4;
+			_view.camera.lens.far = 30000;
+			addChild(_view);
+
+			_envMap = new CubeMap(	new EnvPosX().bitmapData,  new EnvNegX().bitmapData,
+									new EnvPosY().bitmapData,  new EnvNegY().bitmapData,
+									new EnvPosZ().bitmapData,  new EnvNegZ().bitmapData);
+
+			_view.scene.addChild(new SkyBox(_envMap));
 		}
 		
 		private function onStageResize(event : Event) : void
@@ -105,7 +108,12 @@ package
 		private function initMesh() : void
 		{
 			var material : DefaultMaterialBase;
-			_mesh = Mesh(_resourceManager.getResource("assets/ogre.md2"));
+			var diffuseMap : CubeMap;
+			var resourceManager : ResourceManager = ResourceManager.instance;
+
+			resourceManager.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
+
+			_mesh = Mesh(resourceManager.getResource("assets/ogre.md2"));
 			_mesh.scaleX = 12;
 			_mesh.scaleY = 12;
 			_mesh.scaleZ = 12;
@@ -115,17 +123,29 @@ package
 			material = DefaultMaterialBase(_mesh.material);
 			material.specularMap = new Spec().bitmapData;
 			material.normalMap = new Norm().bitmapData;
-			material.diffuseMethod = new EnvMapDiffuseMethod(_diffuseMap);
+
+			diffuseMap = new CubeMap(	new DiffPosX().bitmapData,  new DiffNegX().bitmapData,
+										new DiffPosY().bitmapData,  new DiffNegY().bitmapData,
+										new DiffPosZ().bitmapData,  new DiffNegZ().bitmapData);
+
+			material.diffuseMethod = new EnvMapDiffuseMethod(diffuseMap);
+		}
+
+		private function onResourceRetrieved(event : ResourceEvent) : void
+		{
+			initAnimation();
 		}
 		
 		private function initAnimation() : void
 		{
-			var controller : VertexAnimator = VertexAnimator(_mesh.animationController);
+			// for those running into this, the "extra.animator" approach is strictly temporary, awaiting a pending
+			// ResourceManager update
+			var controller : VertexAnimator = VertexAnimator(_mesh.extra.animator);
 			controller.play("run");
 			controller.timeScale = _timeScale;
 		}
 		
-		private function _handleEnterFrame(ev : Event) : void
+		private function handleEnterFrame(ev : Event) : void
 		{
 			if (_mesh) {
 				_mesh.rotationY += 1;
