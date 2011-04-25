@@ -4,7 +4,7 @@ package
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
 	import away3d.entities.Sprite3D;
-	import away3d.filters.MotionBlurFilter3D;
+	import away3d.filters.DepthOfFieldFilter3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
@@ -79,6 +79,7 @@ package
 		private var _lights : Array;
 		private var _shadowMethod : SlowFilteredShadowMapMethod;
 		private var _shadowMethod2 : SlowFilteredShadowMapMethod;
+		private var _dofFilter : DepthOfFieldFilter3D;
 
 		public function PostProcessTest()
 		{
@@ -87,6 +88,7 @@ package
 
 			initView();
 			_controller = new MonsterController();
+			_dofFilter.focusTarget = _controller.mesh;
 			_view.scene.addChild(_controller.mesh);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
@@ -179,7 +181,10 @@ package
 		{
 			var sprite : Sprite3D;
 			_view = new View3D();
-			_view.filters3d = [ new MotionBlurFilter3D(.8) ];
+//			_view.filters3d = [ new MotionBlurFilter3D(.8) ];
+			_dofFilter = new DepthOfFieldFilter3D(20, 20);
+			_dofFilter.range = 1000;
+			_view.filters3d = [ _dofFilter ];
 			_view.camera.lens.far = 5000;
 			_view.camera.z = -200;
 			_view.camera.y = 160;
