@@ -54,7 +54,7 @@ package
 			var base : Sphere = new Sphere(elementMaterial, GRID_ELEMENT_SIZE);
 
 			_view = new View3D();
-			_dofFilter = new DepthOfFieldFilter3D(30, 30);
+			_dofFilter = new DepthOfFieldFilter3D(20, 20);
 			_dofFilter.range = 400;
 			_view.filters3d = [ _dofFilter ];
 			_view.camera.x = 0;
@@ -81,7 +81,7 @@ package
 			_light.radius = 100;
 			_light.fallOff = 700;
 			_light2 = new DirectionalLight(-1, 1, -1);
-			_light2.color = 0x505070;
+			_light2.color = 0x9090aa;
 			_view.scene.addChild(_light2);
 			_roamer.addChild(_light);
 
