@@ -150,7 +150,6 @@ package
 		{
 			if (event.resource == _mesh) {
 				initAnimation();
-				_mesh.showBoundingBox = true;
 			}
 			else {
 				_controller.addSequence(SkeletonAnimationSequence(event.resource));
