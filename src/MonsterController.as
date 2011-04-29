@@ -148,8 +148,10 @@ package
 
 		private function onResourceRetrieved(event : ResourceEvent) : void
 		{
-			if (event.resource == _mesh)
+			if (event.resource == _mesh) {
 				initAnimation();
+				_mesh.showBoundingBox = true;
+			}
 			else {
 				_controller.addSequence(SkeletonAnimationSequence(event.resource));
 				if (event.resource.name == IDLE_NAME) stop();
