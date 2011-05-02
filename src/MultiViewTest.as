@@ -2,25 +2,23 @@ package
 {
 	import away3d.cameras.Camera3D;
 	import away3d.cameras.lenses.OrthographicLens;
+	import away3d.cameras.lenses.PerspectiveLens;
 	import away3d.containers.View3D;
 	import away3d.core.base.SubGeometry;
 	import away3d.debug.AwayStats;
+	import away3d.entities.Mesh;
+	import away3d.entities.Sprite3D;
 	import away3d.entities.TextureProjector;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.methods.FogMethod;
-	import away3d.materials.methods.HardShadowMapMethod;
 	import away3d.materials.methods.ProjectiveTextureMethod;
-	import away3d.materials.methods.ShadingMethodBase;
-	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
-	import away3d.entities.Mesh;
-	import away3d.entities.Sprite3D;
-	
+
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -70,12 +68,12 @@ package
 		private var ShadowBlob : Class;
 
 		//signature variables
-		private var Signature:Sprite;
-		
+		private var Signature : Sprite;
+
 		//signature swf
 		[Embed(source="/../embeds/signature_david.swf", symbol="Signature")]
-		private var SignatureSwf:Class;
-		
+		private var SignatureSwf : Class;
+
 		private var _view1 : View3D;
 		private var _view2 : View3D;
 		private var _view3 : View3D;
@@ -92,6 +90,7 @@ package
 		private var _lights : Array = [];
 		private var _projectionMethod : ProjectiveTextureMethod;
 		private var _projector : TextureProjector;
+		private var _orthoLens : OrthographicLens;
 
 		public function MultiViewTest()
 		{
@@ -99,6 +98,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 
 			initView();
+			_orthoLens = new OrthographicLens(100);
 			_controller = new MonsterController();
 			_view1.scene.addChild(_controller.mesh);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view1.camera.lens.far * .5, 0x000000));
@@ -114,11 +114,11 @@ package
 			Signature = Sprite(new SignatureSwf());
 			Signature.x = 10;
 			Signature.y = stage.stageHeight - Signature.height - 10;
-			
+
 			addChild(Signature);
-			
+
 			addChild(new AwayStats(_view1));
-			
+
 			stage.addEventListener(Event.RESIZE, onStageResize);
 			stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -290,7 +290,7 @@ package
 			_view1.height = 536;
 			_view1.antiAlias = 4;
 
-			_view2 = new View3D(_view1.scene, new Camera3D(new OrthographicLens(100)));
+			_view2 = new View3D(_view1.scene, new Camera3D(_orthoLens));
 			_view2.x = 540;
 			_view2.y = 20;
 			_view2.width = 464;
@@ -335,9 +335,9 @@ package
 			_view3.y = stage.stageHeight / 576 * 240;
 			_view3.width = stage.stageWidth / 1024 * 116;
 			_view3.height = stage.stageHeight / 576 * 79;
-			
+
 			Signature.x = 10;
-			Signature.y = stage.stageHeight - Signature.height- 10;
+			Signature.y = stage.stageHeight - Signature.height - 10;
 		}
 
 		private function handleEnterFrame(ev : Event) : void
