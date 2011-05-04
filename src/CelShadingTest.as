@@ -1,17 +1,19 @@
 package
 {
+	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
-	import away3d.events.ResourceEvent;
+	import away3d.entities.Mesh;
+	import away3d.events.LoadingEvent;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.Loader3D;
+	import away3d.library.AssetLibrary;
+	import away3d.loaders.parsers.Parsers;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.methods.CelDiffuseMethod;
 	import away3d.materials.methods.CelSpecularMethod;
-	import away3d.entities.Mesh;
-	import away3d.containers.ObjectContainer3D;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -22,10 +24,10 @@ package
 	{
 		
 		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
-		private var OBJ : Class;
+		private var EmbeddedOBJ : Class;
 		
 		private var _view : View3D;
-		private var _container : ObjectContainer3D;
+		private var _container : Loader3D;
 
 		private var _light : LightBase;
 		private var _light2 : LightBase;
@@ -55,8 +57,11 @@ package
 			_view.scene.addChild(_light3);
 			this.addChild(_view);
 
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved)
-			_container = ObjectContainer3D(ResourceManager.instance.parseData(new OBJ(), "head", true));
+			Loader3D.enableParsers(Parsers.ALL_BUNDLED);
+			
+			_container = new Loader3D;
+			_container.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceRetrieved);
+			_container.parseData(EmbeddedOBJ);
 			_container.scale(50);
 //			_container.y -= 50;
 			_view.scene.addChild(_container);
@@ -74,7 +79,7 @@ package
 		}
 
 
-		private function onResourceRetrieved(ev : ResourceEvent) : void
+		private function onResourceRetrieved(ev : LoadingEvent) : void
 		{
 			var mesh : Mesh;
 			var len : uint = _container.numChildren;
