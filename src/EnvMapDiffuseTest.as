@@ -1,19 +1,19 @@
 package
 {
+	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
-	import away3d.events.ResourceEvent;
+	import away3d.entities.Mesh;
+	import away3d.events.LoadingEvent;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.Loader3D;
+	import away3d.loaders.misc.AssetLoaderContext;
+	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
-	import away3d.materials.ColorMaterial;
-	import away3d.materials.methods.EnvMapAmbientMethod;
 	import away3d.materials.methods.EnvMapDiffuseMethod;
 	import away3d.materials.methods.FresnelSpecularMethod;
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.SkyBox;
-	import away3d.entities.Mesh;
-	import away3d.containers.ObjectContainer3D;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -25,7 +25,7 @@ package
 	{
 		private var _view : View3D;
 
-		private var _container : ObjectContainer3D;
+		private var _loader : Loader3D;
 		private var _yellowLight : PointLight;
 		private var _blueLight : PointLight;
 		
@@ -127,11 +127,14 @@ package
 
 			_camController = new HoverDragController(_view.camera, stage);
 
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-			_container = ObjectContainer3D(ResourceManager.instance.parseData(new OBJ(), "head", true));
-			_container.scale(100);
+			Loader3D.enableParser(OBJParser);
+			
+			_loader = new Loader3D();
+			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete);
+			_loader.parseData(new OBJ(), null, new AssetLoaderContext(false));
+			_loader.scale(100);
 
-			_view.scene.addChild(_container);
+			_view.scene.addChild(_loader);
 			_view.scene.addChild(_yellowLight);
 			_view.scene.addChild(_blueLight);
 			_view.scene.addChild(new SkyBox(_envMap));
@@ -148,10 +151,10 @@ package
 			Signature.y = stage.stageHeight - Signature.height;
 		}
 
-		private function onResourceRetrieved(ev : ResourceEvent) : void
+		private function onResourceComplete(ev : LoadingEvent) : void
 		{
 			var mesh : Mesh;
-			var len : uint = _container.numChildren;
+			var len : uint = _loader.numChildren;
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			var material : ColorMaterial = new ColorMaterial(0xffffff);
 			material.normalMap = new Normals().bitmapData;
@@ -164,7 +167,7 @@ package
 			material.specularMap = new Specular().bitmapData;
 
 			for (var i : uint = 0; i < len; ++i) {
-				mesh = Mesh(_container.getChildAt(i));
+				mesh = Mesh(_loader.getChildAt(i));
 				mesh.material = material;
 			}
 		}
@@ -172,7 +175,7 @@ package
 
 		private function _handleEnterFrame(ev : Event) : void
 		{
-			_container.rotationY += .5;
+			_loader.rotationY += .5;
 			//_ctr.rotationX = 20 * Math.sin(getTimer() * 0.002);
 			_view.render();
 		}
