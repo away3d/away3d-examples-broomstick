@@ -3,7 +3,7 @@ package
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
-	import away3d.events.LoadingEvent;
+	import away3d.events.LoaderEvent;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
 	import away3d.loaders.misc.AssetLoaderContext;
@@ -95,7 +95,7 @@ package
 			Loader3D.enableParser(OBJParser);
 			
 			_loader = new Loader3D();
-			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete);
+			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceComplete);
 			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
 			_loader.y = -50;
 			_view.scene.addChild(_loader);
@@ -118,7 +118,7 @@ package
 			_material.specularMethod = _fresnelMethod;
 		}
 
-		private function onResourceComplete(event : LoadingEvent) : void
+		private function onResourceComplete(event : LoaderEvent) : void
 		{
 			var mesh : Mesh;
 			for (var i : int = 0; i < _loader.numChildren; ++i) {

@@ -6,7 +6,7 @@ package
 	import away3d.arcane;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.LoadingEvent;
+	import away3d.events.LoaderEvent;
 	import away3d.library.AssetLibrary;
 	import away3d.loaders.misc.AssetLoaderContext;
 	import away3d.loaders.parsers.Parsers;
@@ -64,7 +64,7 @@ package
 			_mat.repeat = true;
 			
 			AssetLibrary.enableParsers(Parsers.ALL_BUNDLED);
-			AssetLibrary.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onComplete);
+			AssetLibrary.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onComplete);
 			AssetLibrary.parseData(MeshData);
 		}
 		
@@ -86,7 +86,7 @@ package
 		}
 		
 		
-		private function onComplete(ev : LoadingEvent) : void
+		private function onComplete(ev : LoaderEvent) : void
 		{
 			_eyes = Mesh(AssetLibrary.getAsset('Cylinder'));
 			_eyes.material = _mat;

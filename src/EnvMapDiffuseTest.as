@@ -3,7 +3,7 @@ package
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.LoadingEvent;
+	import away3d.events.LoaderEvent;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
 	import away3d.loaders.misc.AssetLoaderContext;
@@ -130,7 +130,7 @@ package
 			Loader3D.enableParser(OBJParser);
 			
 			_loader = new Loader3D();
-			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete);
+			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceComplete);
 			_loader.parseData(new OBJ(), null, new AssetLoaderContext(false));
 			_loader.scale(100);
 
@@ -151,7 +151,7 @@ package
 			Signature.y = stage.stageHeight - Signature.height;
 		}
 
-		private function onResourceComplete(ev : LoadingEvent) : void
+		private function onResourceComplete(ev : LoaderEvent) : void
 		{
 			var mesh : Mesh;
 			var len : uint = _loader.numChildren;

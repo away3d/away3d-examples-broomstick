@@ -4,7 +4,7 @@ package
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
 	import away3d.events.AssetEvent;
-	import away3d.events.LoadingEvent;
+	import away3d.events.LoaderEvent;
 	import away3d.library.assets.AssetType;
 	import away3d.library.AssetLibrary;
 	import away3d.loaders.parsers.MD2Parser;
