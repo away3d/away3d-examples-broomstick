@@ -1,20 +1,10 @@
 package
 {
 	import away3d.containers.View3D;
-	import away3d.animators.data.SkeletonAnimationSequence;
-	import away3d.animators.SmoothSkeletonAnimator;
 	import away3d.events.MouseEvent3D;
-	import away3d.events.ResourceEvent;
-	import away3d.lights.DirectionalLight;
-	import away3d.lights.LightBase;
-	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
 	import away3d.materials.BitmapMaterial;
-	import away3d.materials.utils.WireframeMapGenerator;
 	import away3d.primitives.Plane;
-	import away3d.entities.Mesh;
-
-	import flash.display.Bitmap;
+	
 	import flash.display.BitmapData;
 	import flash.display.BitmapDataChannel;
 	import flash.display.Sprite;
