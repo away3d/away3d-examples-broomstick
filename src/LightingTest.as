@@ -1,15 +1,16 @@
 package
 {
-	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.ResourceEvent;
+	import away3d.events.LoadingEvent;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.Loader3D;
+	import away3d.loaders.misc.AssetLoaderContext;
+	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -20,7 +21,7 @@ package
 	public class LightingTest extends Sprite
 	{
 		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
-		private var OBJ : Class;
+		private var OBJData : Class;
 
 		[Embed(source="/../embeds/head/Images/Map-COL.jpg")]
 		private var Albedo : Class;
@@ -32,7 +33,7 @@ package
 		private var Normal : Class;
 
 		private var _view : View3D;
-		private var _container : ObjectContainer3D;
+		private var _loader : Loader3D;
 
 		private var _light : PointLight;
 		private var _light2 : PointLight;
@@ -70,10 +71,13 @@ package
 			_view.scene.addChild(_light3);
 			this.addChild(_view);
 
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved)
-			_container = ObjectContainer3D(ResourceManager.instance.parseData(new OBJ(), "head", true));
-			_container.scale(50);
-			_view.scene.addChild(_container);
+			Loader3D.enableParser(OBJParser);
+			
+			_loader = new Loader3D();
+			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete);
+			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
+			_loader.scale(50);
+			_view.scene.addChild(_loader);
 
 			this.addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
 			stage.addEventListener(MouseEvent.CLICK, onClick);
@@ -96,10 +100,10 @@ package
 		}
 
 
-		private function onResourceRetrieved(ev : ResourceEvent) : void
+		private function onResourceComplete(ev : LoadingEvent) : void
 		{
 			var mesh : Mesh;
-			var len : uint = _container.numChildren;
+			var len : uint = _loader.numChildren;
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 			material.normalMap = new Normal().bitmapData;
 			material.specularMap = new Specular().bitmapData;
@@ -109,7 +113,7 @@ package
 			//			material.specularMethod = null;
 
 			for (var i : uint = 0; i < len; ++i) {
-				mesh = Mesh(_container.getChildAt(i));
+				mesh = Mesh(_loader.getChildAt(i));
 				mesh.material = material;
 				mesh.geometry.subGeometries[0].autoDeriveVertexNormals = true;
 				mesh.geometry.subGeometries[0].autoDeriveVertexTangents = true;
@@ -120,7 +124,7 @@ package
 
 		private function _handleEnterFrame(ev : Event) : void
 		{
-			_container.rotationY += 0.3;
+			_loader.rotationY += 0.3;
 			_view.render();
 		}
 	}
