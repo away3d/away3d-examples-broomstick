@@ -1,19 +1,19 @@
 package
 {
-	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
-	import away3d.events.ResourceEvent;
-	import away3d.lights.LightBase;
+	import away3d.events.LoadingEvent;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.Loader3D;
+	import away3d.loaders.misc.AssetLoaderContext;
+	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.methods.BasicDiffuseMethod;
 	import away3d.materials.methods.BasicSpecularMethod;
 	import away3d.materials.methods.FresnelSpecularMethod;
 	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -24,12 +24,12 @@ package
 	public class LoaderOBJTest extends Sprite
 	{
 		private var _view : View3D;
-		private var _container : ObjectContainer3D;
+		private var _loader : Loader3D;
 
 		private var _light : PointLight;
 
 		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
-		private var OBJ : Class;
+		private var OBJData : Class;
 
 		[Embed(source="/../embeds/head/Images/Map-COL.jpg")]
 		private var Albedo : Class;
@@ -92,11 +92,13 @@ package
 
 		private function initMesh() : void
 		{
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-//			_container = ObjectContainer3D(ResourceManager.instance.getResource("head/head.obj"));
-			_container = ObjectContainer3D(ResourceManager.instance.parseData(new OBJ(), "head", true));
-			_container.y = -50;
-			_view.scene.addChild(_container);
+			Loader3D.enableParser(OBJParser);
+			
+			_loader = new Loader3D();
+			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete);
+			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
+			_loader.y = -50;
+			_view.scene.addChild(_loader);
 
 			_material = new BitmapMaterial(new Albedo().bitmapData);
 			_subsurfaceMethod = new SubsurfaceScatteringDiffuseMethod(2048, 2);
@@ -116,11 +118,11 @@ package
 			_material.specularMethod = _fresnelMethod;
 		}
 
-		private function onResourceRetrieved(event : ResourceEvent) : void
+		private function onResourceComplete(event : LoadingEvent) : void
 		{
 			var mesh : Mesh;
-			for (var i : int = 0; i < _container.numChildren; ++i) {
-				mesh = Mesh(_container.getChildAt(i));
+			for (var i : int = 0; i < _loader.numChildren; ++i) {
+				mesh = Mesh(_loader.getChildAt(i));
 				mesh.geometry.scale(100);
 				mesh.material = _material
 			}
