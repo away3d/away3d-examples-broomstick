@@ -1,12 +1,13 @@
 package
 {
-	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.ResourceEvent;
+	import away3d.events.LoadingEvent;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.Loader3D;
+	import away3d.loaders.misc.AssetLoaderContext;
+	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
 	import away3d.materials.utils.CubeMap;
@@ -39,11 +40,11 @@ package
 		[Embed(source="/../embeds/envMap/arch_negative_z.jpg")]
 		private var EnvNegZ : Class;
 		
-		[Embed(source="/../embeds/venusm.obj", mimeType="application/octet-stream")]
-		private var OBJ : Class;
+		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
+		private var OBJData : Class;
 		
 		private var _view : View3D;
-		private var _container : ObjectContainer3D;
+		private var _loader : Loader3D;
 		private var _camController : HoverDragController;
 		
 		private var _light : LightBase;
@@ -68,10 +69,12 @@ package
 			_view.scene.addChild(_light);
 			this.addChild(_view);
 			
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved)
-			_container = ObjectContainer3D(ResourceManager.instance.parseData(new OBJ(), "head", true));
-			//			_container.y -= 50;
-			_view.scene.addChild(_container);
+			Loader3D.enableParser(OBJParser);
+			
+			_loader = new Loader3D();
+			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete)
+			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
+			_view.scene.addChild(_loader);
 			
 			this.addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
 			stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -93,12 +96,12 @@ package
 		}
 		
 		
-		private function onResourceRetrieved(ev : ResourceEvent) : void
+		private function onResourceComplete(ev : LoadingEvent) : void
 		{
 			var mesh : Mesh;
 			var material : ColorMaterial = new ColorMaterial(0xffffff); //0xd3996b);
 			var method : SubsurfaceScatteringDiffuseMethod = new SubsurfaceScatteringDiffuseMethod();
-			var len : uint = _container.numChildren;
+			var len : uint = _loader.numChildren;
 			method.scattering = .1;
 			method.scatterColor = 0xffaa00;
 			method.translucency = 5;
@@ -109,8 +112,8 @@ package
 			material.lights = [ _light ];
 			
 			for (var i : uint = 0; i < len; ++i) {
-				mesh = Mesh(_container.getChildAt(i));
-				mesh.geometry.scale(.25);
+				mesh = Mesh(_loader.getChildAt(i));
+				mesh.geometry.scale(50);
 				mesh.y -= 300;
 				mesh.material = material;
 			}
