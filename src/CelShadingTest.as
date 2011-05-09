@@ -3,7 +3,7 @@ package
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.LoadingEvent;
+	import away3d.events.LoaderEvent;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
@@ -60,7 +60,7 @@ package
 			Loader3D.enableParsers(Parsers.ALL_BUNDLED);
 			
 			_container = new Loader3D;
-			_container.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceRetrieved);
+			_container.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceRetrieved);
 			_container.parseData(EmbeddedOBJ);
 			_container.scale(50);
 //			_container.y -= 50;
@@ -79,7 +79,7 @@ package
 		}
 
 
-		private function onResourceRetrieved(ev : LoadingEvent) : void
+		private function onResourceRetrieved(ev : LoaderEvent) : void
 		{
 			var mesh : Mesh;
 			var len : uint = _container.numChildren;

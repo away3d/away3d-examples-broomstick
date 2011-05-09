@@ -2,7 +2,7 @@ package
 {
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.LoadingEvent;
+	import away3d.events.LoaderEvent;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.loaders.Loader3D;
@@ -72,7 +72,7 @@ package
 			Loader3D.enableParser(OBJParser);
 			
 			_loader = new Loader3D();
-			_loader.addEventListener(LoadingEvent.RESOURCE_COMPLETE, onResourceComplete)
+			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceComplete)
 			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
 			_view.scene.addChild(_loader);
 			
@@ -96,7 +96,7 @@ package
 		}
 		
 		
-		private function onResourceComplete(ev : LoadingEvent) : void
+		private function onResourceComplete(ev : LoaderEvent) : void
 		{
 			var mesh : Mesh;
 			var material : ColorMaterial = new ColorMaterial(0xffffff); //0xd3996b);
