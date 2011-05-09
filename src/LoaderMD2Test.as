@@ -3,8 +3,11 @@ package
 	import away3d.animators.VertexAnimator;
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
-	import away3d.events.ResourceEvent;
-	import away3d.loading.ResourceManager;
+	import away3d.events.AssetEvent;
+	import away3d.events.LoadingEvent;
+	import away3d.library.assets.AssetType;
+	import away3d.library.AssetLibrary;
+	import away3d.loaders.parsers.MD2Parser;
 	import away3d.materials.DefaultMaterialBase;
 	import away3d.materials.methods.EnvMapDiffuseMethod;
 	import away3d.materials.utils.CubeMap;
@@ -16,6 +19,7 @@ package
 	import flash.events.Event;
 	import flash.media.Sound;
 	import flash.media.SoundTransform;
+	import flash.net.URLRequest;
 	
 	[SWF(width="1024", height="576", frameRate="60", backgroundColor="0x000000")]
 	public class LoaderMD2Test extends Sprite
@@ -75,9 +79,9 @@ package
 		{
 			init3D();
 
-			Sound(new Audio()).play(0, int.MAX_VALUE, new SoundTransform(.25));
+			//Sound(new Audio()).play(0, int.MAX_VALUE, new SoundTransform(.25));
 
-			initMesh();
+			initLoad();
 
 			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 			stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -105,46 +109,43 @@ package
 			_view.height = stage.stageHeight;
 		}
 		
-		private function initMesh() : void
+		private function initLoad() : void
 		{
-			var material : DefaultMaterialBase;
-			var diffuseMap : CubeMap;
-			var resourceManager : ResourceManager = ResourceManager.instance;
+			AssetLibrary.enableParser(MD2Parser);
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetRetrieved);
+			AssetLibrary.load(new URLRequest('assets/ogre.md2'));
+		}
+		
+		private function onAssetRetrieved(event : AssetEvent) : void
+		{
+			if (event.asset.assetType == AssetType.MESH) {
+				var material : DefaultMaterialBase;
+				var diffuseMap : CubeMap;
 
-			resourceManager.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-
-			_mesh = Mesh(resourceManager.getResource("assets/ogre.md2"));
-			_mesh.scaleX = 12;
-			_mesh.scaleY = 12;
-			_mesh.scaleZ = 12;
-			_mesh.y = -300;
-			_view.scene.addChild(_mesh);
+				_mesh = Mesh(event.asset);
+				_mesh.scaleX = 12;
+				_mesh.scaleY = 12;
+				_mesh.scaleZ = 12;
+				_mesh.y = -300;
+				_view.scene.addChild(_mesh);
 			
-			material = DefaultMaterialBase(_mesh.material);
-			material.specularMap = new Spec().bitmapData;
-			material.normalMap = new Norm().bitmapData;
-
-			diffuseMap = new CubeMap(	new DiffPosX().bitmapData,  new DiffNegX().bitmapData,
-										new DiffPosY().bitmapData,  new DiffNegY().bitmapData,
-										new DiffPosZ().bitmapData,  new DiffNegZ().bitmapData);
-
-			material.diffuseMethod = new EnvMapDiffuseMethod(diffuseMap);
+				material = DefaultMaterialBase(_mesh.material);
+				material.specularMap = new Spec().bitmapData;
+				material.normalMap = new Norm().bitmapData;
+	
+				diffuseMap = new CubeMap(	new DiffPosX().bitmapData,  new DiffNegX().bitmapData,
+											new DiffPosY().bitmapData,  new DiffNegY().bitmapData,
+											new DiffPosZ().bitmapData,  new DiffNegZ().bitmapData);
+	
+				material.diffuseMethod = new EnvMapDiffuseMethod(diffuseMap);
+			}
+			else if (event.asset.assetType == AssetType.ANIMATOR) {
+				var controller : VertexAnimator = VertexAnimator(event.asset);
+				controller.play("run");
+				controller.timeScale = _timeScale;
+			}
 		}
 
-		private function onResourceRetrieved(event : ResourceEvent) : void
-		{
-			initAnimation();
-		}
-		
-		private function initAnimation() : void
-		{
-			// for those running into this, the "extra.animator" approach is strictly temporary, awaiting a pending
-			// ResourceManager update
-			var controller : VertexAnimator = VertexAnimator(_mesh.extra.animator);
-			controller.play("run");
-			controller.timeScale = _timeScale;
-		}
-		
 		private function handleEnterFrame(ev : Event) : void
 		{
 			if (_mesh) {
@@ -152,6 +153,7 @@ package
 				_mesh.moveRight(2*_timeScale);
 				_view.camera.lookAt(_mesh.position);
 			}
+			
 			_view.render();
 		}
 	}
