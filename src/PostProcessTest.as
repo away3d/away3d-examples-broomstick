@@ -88,8 +88,7 @@ package
 
 			initView();
 			_controller = new MonsterController();
-			_dofFilter.focusTarget = _controller.mesh;
-			_view.scene.addChild(_controller.mesh);
+			_controller.addEventListener(MonsterEvent.MESH_COMPLETE, onMeshComplete);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
 			_controller.bodyMaterial.lights = _lights;
@@ -105,7 +104,13 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
-
+		
+		private function onMeshComplete(event : MonsterEvent) : void
+		{
+			_dofFilter.focusTarget = _controller.mesh;
+			_view.scene.addChild(_controller.mesh);
+		}
+		
 		private function onKeyDown(event : KeyboardEvent) : void
 		{
 			switch (event.keyCode) {
@@ -258,11 +263,13 @@ package
 		private function handleEnterFrame(ev : Event) : void
 		{
 			var mesh : Mesh = _controller.mesh;
-			_controller.update();
-			_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x) * .03;
-			_targetLookAt.y = _targetLookAt.y + (mesh.y + 50 - _targetLookAt.y) * .03;
-			_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z) * .03;
-			_view.camera.lookAt(_targetLookAt);
+			if (mesh) {
+				_controller.update();
+				_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x) * .03;
+				_targetLookAt.y = _targetLookAt.y + (mesh.y + 50 - _targetLookAt.y) * .03;
+				_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z) * .03;
+				_view.camera.lookAt(_targetLookAt);
+			}
 
 			_count += .01;
 			_light.x = Math.sin(_count) * 1500;

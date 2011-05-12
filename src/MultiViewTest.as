@@ -5,6 +5,8 @@ package
 	import away3d.containers.View3D;
 	import away3d.core.base.SubGeometry;
 	import away3d.debug.AwayStats;
+	import away3d.entities.Mesh;
+	import away3d.entities.Sprite3D;
 	import away3d.entities.TextureProjector;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
@@ -18,8 +20,6 @@ package
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
-	import away3d.entities.Mesh;
-	import away3d.entities.Sprite3D;
 	
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
@@ -100,12 +100,10 @@ package
 
 			initView();
 			_controller = new MonsterController();
-			_view1.scene.addChild(_controller.mesh);
+			_controller.addEventListener(MonsterEvent.MESH_COMPLETE, onMeshComplete);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view1.camera.lens.far * .5, 0x000000));
 			_controller.bodyMaterial.lights = _lights;
 			_controller.bodyMaterial.lights = _lights;
-			_controller.mesh.addChild(_view2.camera);
-			_controller.mesh.addChild(_projector);
 //			_view1.scene.addChild(_projector);
 			_projector.y = 500;
 			_projector.z = -5;
@@ -124,7 +122,14 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
-
+		
+		private function onMeshComplete(event : MonsterEvent) : void
+		{
+			_view1.scene.addChild(_controller.mesh);
+			_controller.mesh.addChild(_view2.camera);
+			_controller.mesh.addChild(_projector);
+		}
+		
 		private function onKeyDown(event : KeyboardEvent) : void
 		{
 			switch (event.keyCode) {
@@ -343,23 +348,26 @@ package
 		private function handleEnterFrame(ev : Event) : void
 		{
 			var mesh : Mesh = _controller.mesh;
-			var x : Number = (mesh.x / 50000 + .5) * 512;
-			var y : Number = (mesh.z / 50000 + .5) * 512;
-			var xi : int = x;
-			var yi : int = y;
-			var xr : Number = x - xi;
-			var yr : Number = y - yi;
-
-			mesh.y = (((1 - yr) * ((1 - xr) * (_bmp.getPixel(xi, yi) & 0xff) + xr * (_bmp.getPixel(xi + 1, yi) & 0xff)) +
-					yr * ((1 - xr) * (_bmp.getPixel(xi, yi + 1) & 0xff) + xr * (_bmp.getPixel(xi + 1, yi + 1) & 0xff))) - 0x80) * 10;
-			_controller.update();
-
-			_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x) * .03;
-			_targetLookAt.y = _targetLookAt.y + (mesh.y - _targetLookAt.y) * .03;
-			_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z) * .03;
-//			_view1.camera.lookAt(_light.position);
-			_view1.camera.lookAt(_targetLookAt);
-			_view3.camera.lookAt(mesh.position);
+			if (mesh) {
+				
+				var x : Number = (mesh.x / 50000 + .5) * 512;
+				var y : Number = (mesh.z / 50000 + .5) * 512;
+				var xi : int = x;
+				var yi : int = y;
+				var xr : Number = x - xi;
+				var yr : Number = y - yi;
+	
+				mesh.y = (((1 - yr) * ((1 - xr) * (_bmp.getPixel(xi, yi) & 0xff) + xr * (_bmp.getPixel(xi + 1, yi) & 0xff)) +
+						yr * ((1 - xr) * (_bmp.getPixel(xi, yi + 1) & 0xff) + xr * (_bmp.getPixel(xi + 1, yi + 1) & 0xff))) - 0x80) * 10;
+				_controller.update();
+	
+				_targetLookAt.x = _targetLookAt.x + (mesh.x - _targetLookAt.x) * .03;
+				_targetLookAt.y = _targetLookAt.y + (mesh.y - _targetLookAt.y) * .03;
+				_targetLookAt.z = _targetLookAt.z + (mesh.z - _targetLookAt.z) * .03;
+	//			_view1.camera.lookAt(_light.position);
+				_view1.camera.lookAt(_targetLookAt);
+				_view3.camera.lookAt(mesh.position);
+			}
 
 			_count += .01;
 			_light.x = Math.sin(_count) * 1500;

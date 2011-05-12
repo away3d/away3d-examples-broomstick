@@ -1,7 +1,7 @@
 package
 {
 	import away3d.animators.SmoothSkeletonAnimator;
-	import away3d.animators.data.AnimationSequenceBase;
+	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.containers.ObjectContainer3D;
 	import away3d.containers.View3D;
@@ -13,7 +13,8 @@ package
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
-	import away3d.loaders.parsers.Parsers;
+	import away3d.loaders.parsers.MD5AnimParser;
+	import away3d.loaders.parsers.MD5MeshParser;
 	import away3d.materials.BitmapMaterial;
 	
 	import flash.display.Sprite;
@@ -139,51 +140,47 @@ package
 		
 		private function loadResources() : void
 		{
-			AssetLibrary.enableParsers(Parsers.ALL_BUNDLED);
-			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onResourceRetrieved);
-			AssetLibrary.load(new URLRequest("assets/" + MESH_NAME+"/"+MESH_NAME+".md5mesh"));
+			AssetLibrary.enableParser(MD5MeshParser);
+			AssetLibrary.enableParser(MD5AnimParser);
+			
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			AssetLibrary.load(new URLRequest("assets/" + MESH_NAME + "/" + MESH_NAME + ".md5mesh"));
 		}
 		
-		private function loadAnimations() : void
+		private function onAssetComplete(event : AssetEvent) : void
 		{
-			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
-				AssetLibrary.load(new URLRequest("assets/" + MESH_NAME+"/"+ANIM_NAMES[i]+".md5anim"));
-			}
-		}
-		
-		private function onResourceRetrieved(event : AssetEvent) : void
-		{
-			var i : uint;
 			if (event.asset.assetType == AssetType.MESH) {
-				_sourceMesh = Mesh(event.asset);
+				_sourceMesh = event.asset as Mesh;
+				_sourceMesh.y = 0;
 				_sourceMesh.scale(3);
 				
 				initMaterials();
 				cloneMeshes();
 				loadAnimations();
-			}
-			else if (event.asset.assetType == AssetType.ANIMATION) {
-				for (i=0; i < ANIM_NAMES.length; i++) {
-					var seq : AnimationSequenceBase;
-					var j : uint;
-					
-					seq = AnimationSequenceBase(event.asset);
-					seq.name = ANIM_NAMES[i];
-					for (j=0; j < _meshes.length; j++) {
-						_animators[_meshes[j]].addSequence(seq);
-					}
-					
-				}
+			} else if (event.asset.assetType == AssetType.ANIMATION) {
+				var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
+				seq.name = event.asset.assetNamespace;
+				for (var j : uint = 0; j < _meshes.length; ++j)
+					_animators[_meshes[j]].addSequence(seq);
 			}
 			
 			_textField.text = "Retrieved resource "+event.asset.name;
 			
 			if (++_resourceCount > ANIM_NAMES.length) {
 				_textField.text = "All resources retrieved";
-
+				
 				// start animations randomly
-				for (i = 0; i < _meshes.length; ++i)
+				for (var i : uint = 0; i < _meshes.length; ++i)
 					setTimeout(_animators[_meshes[i]].play, Math.random()*3000, ANIM_NAMES[int(Math.random()*ANIM_NAMES.length)]);
+			}
+		}
+		
+		private function loadAnimations() : void
+		{
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			
+			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
+				AssetLibrary.load(new URLRequest("assets/" + MESH_NAME + "/" + ANIM_NAMES[i] + ".md5anim"), null, null, ANIM_NAMES[i]);
 			}
 		}
 		

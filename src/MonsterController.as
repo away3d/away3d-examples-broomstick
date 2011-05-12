@@ -3,16 +3,24 @@
  */
 package
 {
-	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.SmoothSkeletonAnimator;
+	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.data.SkeletonAnimationState;
-	import away3d.events.AnimatorEvent;
-	import away3d.events.ResourceEvent;
-	import away3d.loading.ResourceManager;
-	import away3d.materials.BitmapMaterial;
+	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
+	import away3d.events.AnimatorEvent;
+	import away3d.events.AssetEvent;
+	import away3d.library.AssetLibrary;
+	import away3d.library.assets.AssetType;
+	import away3d.loaders.parsers.MD5AnimParser;
+	import away3d.loaders.parsers.MD5MeshParser;
+	import away3d.materials.BitmapMaterial;
+	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.net.URLRequest;
 
-	public class MonsterController
+	public class MonsterController extends EventDispatcher
 	{
 
 		[Embed(source="/../embeds/hellknight/hellknight.jpg")]
@@ -141,18 +149,34 @@ package
 
 		private function initMesh() : void
 		{
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-			_mesh = Mesh(ResourceManager.instance.getResource("assets/" + MD5_DIR + "/" + MESH_NAME + ".md5mesh"));;
-			_mesh.material = _bodyMaterial;
+			AssetLibrary.enableParser(MD5MeshParser);
+			AssetLibrary.enableParser(MD5AnimParser);
+			
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			AssetLibrary.load(new URLRequest("assets/" + MD5_DIR + "/" + MESH_NAME + ".md5mesh"));
 		}
 
-		private function onResourceRetrieved(event : ResourceEvent) : void
+		private function onAssetComplete(event : AssetEvent) : void
 		{
-			if (event.resource == _mesh)
+			if (event.asset.assetType == AssetType.MESH) {
+				_mesh = event.asset as Mesh;
+				_mesh.material = _bodyMaterial;
+				dispatchEvent(new MonsterEvent(MonsterEvent.MESH_COMPLETE));
 				initAnimation();
-			else {
-				_controller.addSequence(SkeletonAnimationSequence(event.resource));
-				if (event.resource.name == IDLE_NAME) stop();
+			} else if (event.asset.assetType == AssetType.ANIMATION) {
+				var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
+				seq.name = event.asset.assetNamespace;
+				_controller.addSequence(seq);
+				
+				if (seq.name == IDLE_NAME || seq.name == WALK_NAME) {
+					seq.looping = true;
+				} else {
+					seq.looping = false;
+					seq.addEventListener(AnimatorEvent.SEQUENCE_DONE, onClipComplete);
+				}
+				
+				if (seq.name == IDLE_NAME)
+					stop();
 			}
 		}
 
@@ -160,14 +184,11 @@ package
 		{
 			_controller = new SmoothSkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
 			_controller.timeScale = _timeScale;
-
+			
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
-				_sequences[i] = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MD5_DIR + "/" + ANIM_NAMES[i] + ".md5anim"));
-				_sequences[i].name = ANIM_NAMES[i];
-				_sequences[i].looping = ANIM_LOOPS[i];
-
-				if (!_sequences[i].looping)
-					_sequences[i].addEventListener(AnimatorEvent.SEQUENCE_DONE, onClipComplete);
+				AssetLibrary.load(new URLRequest("assets/" + MD5_DIR + "/" + ANIM_NAMES[i] + ".md5anim"), null, null, ANIM_NAMES[i]);
 			}
 		}
 
