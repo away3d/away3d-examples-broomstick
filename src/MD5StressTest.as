@@ -163,6 +163,19 @@ package
 				for (var j : uint = 0; j < _meshes.length; ++j)
 					_animators[_meshes[j]].addSequence(seq);
 			}
+			else if (event.asset.assetType == AssetType.ANIMATION) {
+				for (i=0; i < ANIM_NAMES.length; i++) {
+					var seq : AnimationSequenceBase;
+					var j : uint;
+					
+					seq = AnimationSequenceBase(event.asset);
+					seq.name = ANIM_NAMES[i];
+					for (j=0; j < _meshes.length; j++) {
+						_animators[_meshes[j]].addSequence(seq);
+					}
+					
+				}
+			}
 			
 			_textField.text = "Retrieved resource "+event.asset.name;
 			
@@ -170,7 +183,7 @@ package
 				_textField.text = "All resources retrieved";
 				
 				// start animations randomly
-				for (var i : uint = 0; i < _meshes.length; ++i)
+				for (i = 0; i < _meshes.length; ++i)
 					setTimeout(_animators[_meshes[i]].play, Math.random()*3000, ANIM_NAMES[int(Math.random()*ANIM_NAMES.length)]);
 			}
 		}
