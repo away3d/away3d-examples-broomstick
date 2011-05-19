@@ -7,17 +7,21 @@ package
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
-	import away3d.events.ResourceEvent;
+	import away3d.events.AssetEvent;
+	import away3d.library.AssetLibrary;
+	import away3d.library.assets.AssetType;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.parsers.MD5AnimParser;
+	import away3d.loaders.parsers.MD5MeshParser;
 	import away3d.materials.BitmapMaterial;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
@@ -136,39 +140,47 @@ package
 		
 		private function loadResources() : void
 		{
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-
-			_sourceMesh = Mesh(ResourceManager.instance.getResource("assets/" + MESH_NAME+"/"+MESH_NAME+".md5mesh"));
-			_sourceMesh.y = 0;
-			_sourceMesh.scale(3);
+			AssetLibrary.enableParser(MD5MeshParser);
+			AssetLibrary.enableParser(MD5AnimParser);
+			
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			AssetLibrary.load(new URLRequest("assets/" + MESH_NAME + "/" + MESH_NAME + ".md5mesh"));
+		}
+		
+		private function onAssetComplete(event : AssetEvent) : void
+		{
+			if (event.asset.assetType == AssetType.MESH) {
+				_sourceMesh = event.asset as Mesh;
+				_sourceMesh.y = 0;
+				_sourceMesh.scale(3);
+				
+				initMaterials();
+				cloneMeshes();
+				loadAnimations();
+			} else if (event.asset.assetType == AssetType.ANIMATION) {
+				var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
+				seq.name = event.asset.assetNamespace;
+				for (var j : uint = 0; j < _meshes.length; ++j)
+					_animators[_meshes[j]].addSequence(seq);
+			}
+			
+			_textField.text = "Retrieved resource "+event.asset.name;
+			
+			if (++_resourceCount > ANIM_NAMES.length) {
+				_textField.text = "All resources retrieved";
+				
+				// start animations randomly
+				for (var i : uint = 0; i < _meshes.length; ++i)
+					setTimeout(_animators[_meshes[i]].play, Math.random()*3000, ANIM_NAMES[int(Math.random()*ANIM_NAMES.length)]);
+			}
 		}
 		
 		private function loadAnimations() : void
 		{
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
-				var seq : SkeletonAnimationSequence = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MESH_NAME+"/"+ANIM_NAMES[i]+".md5anim"));
-				seq.name = ANIM_NAMES[i];
-				for (var j : uint = 0; j < _meshes.length; ++j)
-					_animators[_meshes[j]].addSequence(seq);
-			}
-		}
-		
-		private function onResourceRetrieved(event : ResourceEvent) : void
-		{
-			if (event.resource == _sourceMesh) {
-				initMaterials();
-				cloneMeshes();
-				loadAnimations();
-			}
-			
-			_textField.text = "Retrieved resource "+event.resource.name;
-			
-			if (++_resourceCount > ANIM_NAMES.length) {
-				_textField.text = "All resources retrieved";
-
-				// start animations randomly
-				for (var i : uint = 0; i < _meshes.length; ++i)
-					setTimeout(_animators[_meshes[i]].play, Math.random()*3000, ANIM_NAMES[int(Math.random()*ANIM_NAMES.length)]);
+				AssetLibrary.load(new URLRequest("assets/" + MESH_NAME + "/" + ANIM_NAMES[i] + ".md5anim"), null, null, ANIM_NAMES[i]);
 			}
 		}
 		

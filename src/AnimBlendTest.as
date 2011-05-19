@@ -1,29 +1,34 @@
 package
 {
-	import away3d.animators.data.SkeletonAnimationState;
-	import away3d.arcane;
-	import away3d.containers.View3D;
 	import away3d.animators.BlendingSkeletonAnimator;
 	import away3d.animators.data.SkeletonAnimationSequence;
-	import away3d.animators.data.SkeletonAnimationSequence;
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.animators.skeleton.SkeletonUtils;
+	import away3d.arcane;
+	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
-	import away3d.events.ResourceEvent;
+	import away3d.entities.Mesh;
+	import away3d.events.AssetEvent;
+	import away3d.events.LoaderEvent;
+	import away3d.library.AssetLibrary;
+	import away3d.library.assets.AssetType;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
-	import away3d.loading.ResourceManager;
+	import away3d.loaders.Loader3D;
+	import away3d.loaders.parsers.MD5AnimParser;
+	import away3d.loaders.parsers.MD5MeshParser;
 	import away3d.materials.BitmapMaterial;
-	import away3d.entities.Mesh;
-
+	
 	import com.bit101.components.HSlider;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Vector3D;
+	import flash.net.URLRequest;
 
 	use namespace arcane;
 
@@ -35,7 +40,8 @@ package
 		private var _light : PointLight;
 		private var _light2 : PointLight;
 		private var _light3 : LightBase;
-
+		private var _loader : Loader3D;
+		
 		private var _targetLookAt : Vector3D;
 		private var _count : Number = 0;
 
@@ -125,20 +131,23 @@ package
 
 		private function loadResources() : void
 		{
-			ResourceManager.instance.addEventListener(ResourceEvent.RESOURCE_RETRIEVED, onResourceRetrieved);
-
-			_mesh = Mesh(ResourceManager.instance.getResource("assets/" + MESH_NAME + "/" + MESH_NAME + ".md5mesh"));
-			_mesh.y = 0;
-			_mesh.scale(25);
-			_view.scene.addChild(_mesh);
+			AssetLibrary.enableParser(MD5MeshParser);
+			AssetLibrary.enableParser(MD5AnimParser);
+			
+			_loader = new Loader3D();
+			_loader.addEventListener(AssetEvent.ASSET_COMPLETE, onMeshComplete);
+			_loader.load(new URLRequest("assets/" + MESH_NAME + "/" + MESH_NAME + ".md5mesh"));
+			
+			_loader.y = 0;
+			_loader.scale(25);
+			_view.scene.addChild(_loader);
 
 		}
 
-		private function onResourceRetrieved(event : ResourceEvent) : void
+		private function onMeshComplete(event : AssetEvent) : void
 		{
-			var diffClip : SkeletonAnimationSequence;
-
-			if (event.resource == _mesh) {
+			if (event.asset.assetType == AssetType.MESH) {
+				_mesh = _loader.handle as Mesh;
 				_animationController = new BlendingSkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
 				var material : BitmapMaterial = new BitmapMaterial(new Teeth().bitmapData);
 				material.lights = [ _light2, _light3 ];
@@ -146,7 +155,7 @@ package
 				material.transparent = true;
 				material.ambientColor = 0x202030;
 				_mesh.subMeshes[0].material = material;
-
+		
 				material = new BitmapMaterial(new Skin().bitmapData);
 				material.lights = [ _light2, _light3 ];
 				material.gloss = 20;
@@ -157,22 +166,34 @@ package
 				_mesh.material = material;
 				loadAnimations();
 			}
-			else if(event.resource.name == ANIM_NAMES[0]) {
-				diffClip = SkeletonUtils.generateDifferenceClip(	SkeletonAnimationSequence(event.resource),
-																	SkeletonAnimationSequence(event.resource)._frames[0]);
+		}
+		
+		private function onAnimationComplete(event : AssetEvent) : void
+		{
+			var diffClip : SkeletonAnimationSequence;
+			
+			if(event.asset.assetNamespace == ANIM_NAMES[0]) {
+				diffClip = SkeletonUtils.generateDifferenceClip(	SkeletonAnimationSequence(event.asset),
+																	SkeletonAnimationSequence(event.asset)._frames[0]);
 				diffClip.name = "additionClip";
 				_animationController.addSequence(diffClip);
 				ANIM_NAMES[5] = diffClip.name;
 			}
+			
+			var seq : SkeletonAnimationSequence = event.asset as SkeletonAnimationSequence;
+			
+			seq.name = event.asset.assetNamespace;
+			_animationController.addSequence(seq);
+			if (event.asset.assetNamespace == "sight") _animationController.play();
+			
 		}
-
+		
 		private function loadAnimations() : void
 		{
+			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAnimationComplete);
+			
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
-				var seq : SkeletonAnimationSequence = SkeletonAnimationSequence(ResourceManager.instance.getResource("assets/" + MESH_NAME + "/" + ANIM_NAMES[i] + ".md5anim"));
-				seq.name = ANIM_NAMES[i];
-				_animationController.addSequence(seq);
-				if (i == 0) _animationController.play();
+				AssetLibrary.load(new URLRequest("assets/" + MESH_NAME + "/" + ANIM_NAMES[i] + ".md5anim"), null, null, ANIM_NAMES[i]);
 			}
 		}
 
