@@ -1,6 +1,5 @@
 package
 {
-	import away3d.bounds.BoundingSphere;
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
