@@ -3,13 +3,11 @@ package
 	import away3d.containers.View3D;
 	import away3d.core.partition.Octree;
 	import away3d.core.partition.Partition3D;
-	import away3d.core.partition.QuadTree;
-	import away3d.core.partition.QuadTreeNode;
-	import away3d.core.render.PositionRenderer;
 	import away3d.debug.AwayStats;
+	import away3d.entities.Mesh;
 	import away3d.events.MouseEvent3D;
-	import away3d.lights.LightBase;
 	import away3d.lights.DirectionalLight;
+	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
@@ -17,9 +15,7 @@ package
 	import away3d.materials.MaterialBase;
 	import away3d.materials.MaterialLibrary;
 	import away3d.primitives.Plane;
-	import away3d.entities.Mesh;
 
-	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageQuality;
@@ -27,8 +23,6 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
 	import flash.system.Security;
 
 	[SWF(width="1024", height="576", frameRate="60", backgroundColor=0x000000)]
@@ -67,12 +61,13 @@ package
 			_partition = new Octree(4, 50000);
 			stage.quality = StageQuality.HIGH;
 			initScene3D();
+			addChild(new AwayStats(_view));
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			_materialLibrary = MaterialLibrary.getInstance();
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.RESIZE, onStageResize);
-        }
+		}
 
 		private function onStageResize(event : Event) : void
 		{
@@ -90,25 +85,26 @@ package
 
 		private function onEnterFrame(event : Event) : void
 		{
-			for (var i : int = 0; i < _numPlanes; ++i) {
+		// wtf.. this causes a dramatic memory usage zigzag
+			/*for (var i : int = 0; i < _numPlanes; ++i) {
 				var plane : Mesh = _planes[i];
 //				plane.rotationX += .5;
 				if (plane.extra.speed > .01)
 					plane.rotationY += plane.extra.speed;
 //				plane.rotationZ += .4;
 				plane.extra.speed *= .98;
-			}
+			}                         */
 
 			_view.camera.rotationX += .09;
 			_view.camera.rotationY += .1;
 			_view.camera.rotationZ += .08;
 
-			_light.x = _view.camera.x;//+10000*Math.cos(_count);
-			_light.y = _view.camera.y;//+10000*Math.cos(_count*.9);
-			_light.z = _view.camera.z;//+10000*Math.cos(_count*1.1);
-			_light2.x = _view.camera.x+10000*Math.sin(_count*1.3);
-			_light2.y = _view.camera.y+10000*Math.sin(_count*.87);
-			_light2.z = _view.camera.z+10000*Math.sin(_count*.667);
+//			_light.x = _view.camera.x;//+10000*Math.cos(_count);
+//			_light.y = _view.camera.y;//+10000*Math.cos(_count*.9);
+//			_light.z = _view.camera.z;//+10000*Math.cos(_count*1.1);
+//			_light2.x = _view.camera.x + 10000 * Math.sin(_count * 1.3);
+//			_light2.y = _view.camera.y + 10000 * Math.sin(_count * .87);
+//			_light2.z = _view.camera.z + 10000 * Math.sin(_count * .667);
 
 			_count += .03;
 			_view.render();
@@ -116,7 +112,8 @@ package
 
 		private function initScene3D() : void
 		{
-			_material2 = new ColorMaterial(0xffffff);/*new BitmapMaterial(new Asset().bitmapData);*/
+			_view = new View3D();
+			_material2 = new ColorMaterial(0xffffff);
 			_material2.normalMap = new NormalMapAsset().bitmapData;
 			_material2.ambientColor = 0x111122;
 			ColorMaterial(_material2).alpha = .5;
@@ -126,33 +123,31 @@ package
 			_material1.specularMap = new SpecularMap().bitmapData;
 			_materialName = _material2.name;
 			_planes = new Vector.<Mesh>();
-			_view = new View3D();
+
+			// comment out this line to see it work without partitioning
+			_view.scene.partition = _partition;
 			_view.antiAlias = 4;
 //			_view.depthPrepass = true;
 			var srcplane : Mesh = new Plane(_material1, 100, 100, 30, 30);
 			for (var i : int = 0; i < _numPlanes; ++i) {
 				var plane : Mesh = Mesh(srcplane.clone());
-				plane.material = Math.random() > .5? _material1 : _material2;
-				plane.rotationX = Math.random()*360;
-				plane.rotationY = Math.random()*360;
-				plane.rotationZ = Math.random()*360;
-				plane.x = (Math.random()-.5)*50000;
-				plane.y = (Math.random()-.5)*50000;
-				plane.z = (Math.random()-.5)*50000;
+				plane.material = Math.random() > .5 ? _material1 : _material2;
+				plane.rotationX = Math.random() * 360;
+				plane.rotationY = Math.random() * 360;
+				plane.rotationZ = Math.random() * 360;
+				plane.x = (Math.random() - .5) * 20000;
+				plane.y = (Math.random() - .5) * 20000;
+				plane.z = (Math.random() - .5) * 20000;
 				plane.extra = { speed: 0 };
 				plane.mouseEnabled = false;
 //				plane.mouseDetails = true;
 				plane.addEventListener(MouseEvent3D.MOUSE_MOVE, onPlaneMove);
 				plane.addEventListener(MouseEvent3D.CLICK, onPlaneClick);
 
-				// comment out this line to see it work without partitioning
-				plane.partition = _partition;
-
 				_view.scene.addChild(plane);
 				_view.scene.addChild(plane);
 				_planes.push(plane);
 			}
-//			plane.addChild(_view.camera);
 
 			_view.camera.lens.far = 10000;
 			_view.backgroundColor = 0x000000;
@@ -167,7 +162,7 @@ package
 			_light3 = new DirectionalLight(1, -1, 1);
 			_light3.color = 0xffeeaa;
 //			_light3.specular = .5;
-			
+
 			_view.scene.addChild(_light);
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
@@ -175,9 +170,6 @@ package
 //			_view.renderer = new PositionRenderer();
 			_material1.lights = [ _light, _light2, _light3 ];
 			_material2.lights = [ _light, _light2, _light3 ];
-
-			addChild(new AwayStats(_view));
-
 		}
 
 		private function onPlaneClick(event : MouseEvent3D) : void
@@ -196,7 +188,7 @@ package
 //			event.object.extra.speed = 30;
 			var material : BitmapMaterial = event.material as BitmapMaterial;
 			if (material) {
-				var rect : Rectangle = new Rectangle(event.uv.x*material.bitmapData.width-9, event.uv.y*material.bitmapData.height-9, 19, 19);
+				var rect : Rectangle = new Rectangle(event.uv.x * material.bitmapData.width - 9, event.uv.y * material.bitmapData.height - 9, 19, 19);
 				material.bitmapData.fillRect(rect, 0x0000ff);
 				material.updateTexture();
 			}

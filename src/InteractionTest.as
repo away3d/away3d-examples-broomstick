@@ -1,5 +1,6 @@
 package
 {
+	import away3d.bounds.BoundingSphere;
 	import away3d.containers.View3D;
 	import away3d.events.MouseEvent3D;
 	import away3d.materials.BitmapMaterial;
@@ -41,6 +42,10 @@ package
 			_material2 = new BitmapMaterial(bitmapData2);
 			_mesh1 = new Plane(_material1, 500, 500, 1, 1);
 			_mesh2 = new Plane(_material2, 500, 500, 1, 1);
+			_mesh1.bounds = new BoundingSphere();
+			_mesh2.bounds = new BoundingSphere();
+			_mesh1.showBounds = true;
+			_mesh2.showBounds = true;
 			_view.scene.addChild(_mesh1);
 			_view.scene.addChild(_mesh2);
 			_mesh1.rotationY = .01;
