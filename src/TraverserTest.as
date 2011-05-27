@@ -1,5 +1,6 @@
 package
 {
+	import away3d.bounds.BoundingSphere;
 	import away3d.containers.View3D;
 	import away3d.core.partition.Octree;
 	import away3d.core.partition.Partition3D;
@@ -58,7 +59,7 @@ package
 		public function TraverserTest()
 		{
 			Security.allowDomain("*");
-			_partition = new Octree(4, 50000);
+			_partition = new Octree(5, 20000);
 			stage.quality = StageQuality.HIGH;
 			initScene3D();
 			addChild(new AwayStats(_view));
@@ -124,6 +125,7 @@ package
 			_materialName = _material2.name;
 			_planes = new Vector.<Mesh>();
 
+//			_partition.showDebugBounds = true;
 			// comment out this line to see it work without partitioning
 			_view.scene.partition = _partition;
 			_view.antiAlias = 4;
@@ -143,7 +145,6 @@ package
 //				plane.mouseDetails = true;
 				plane.addEventListener(MouseEvent3D.MOUSE_MOVE, onPlaneMove);
 				plane.addEventListener(MouseEvent3D.CLICK, onPlaneClick);
-
 				_view.scene.addChild(plane);
 				_view.scene.addChild(plane);
 				_planes.push(plane);
