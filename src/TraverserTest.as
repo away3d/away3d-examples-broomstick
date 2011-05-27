@@ -59,7 +59,7 @@ package
 		public function TraverserTest()
 		{
 			Security.allowDomain("*");
-			_partition = new Octree(5, 20000);
+			_partition = new Octree(5, 50000);
 			stage.quality = StageQuality.HIGH;
 			initScene3D();
 			addChild(new AwayStats(_view));
@@ -117,7 +117,7 @@ package
 			_material2 = new ColorMaterial(0xffffff);
 			_material2.normalMap = new NormalMapAsset().bitmapData;
 			_material2.ambientColor = 0x111122;
-			ColorMaterial(_material2).alpha = .5;
+//			ColorMaterial(_material2).alpha = .5;
 			_material2.gloss = 250;
 			_material1 = new BitmapMaterial(new TextureAsset().bitmapData);
 			_material1.normalMap = new NormalMap2().bitmapData;
@@ -145,6 +145,7 @@ package
 //				plane.mouseDetails = true;
 				plane.addEventListener(MouseEvent3D.MOUSE_MOVE, onPlaneMove);
 				plane.addEventListener(MouseEvent3D.CLICK, onPlaneClick);
+				plane.bounds = new BoundingSphere()
 				_view.scene.addChild(plane);
 				_view.scene.addChild(plane);
 				_planes.push(plane);
