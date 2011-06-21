@@ -79,7 +79,7 @@ package
 				clip.arcane::addFrame(new UVAnimationFrame(Math.random()*0.3-0.15, Math.random()*0.3-0.15), 200);
 			}
 			
-			_animator = new UVAnimator(_mat);
+			_animator = new UVAnimator(_eyes.subMeshes[0]);
 			_animator.addSequence(clip);
 			
 			_animator.play('test');
