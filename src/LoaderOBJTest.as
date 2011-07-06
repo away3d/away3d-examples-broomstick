@@ -13,7 +13,7 @@ package
 	import away3d.materials.methods.BasicSpecularMethod;
 	import away3d.materials.methods.FresnelSpecularMethod;
 	import away3d.materials.methods.SubsurfaceScatteringDiffuseMethod;
-	
+
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -93,7 +93,7 @@ package
 		private function initMesh() : void
 		{
 			Loader3D.enableParser(OBJParser);
-			
+
 			_loader = new Loader3D();
 			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceComplete);
 			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
