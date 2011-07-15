@@ -308,10 +308,8 @@ package
 			_view3 = new View3D(_view1.scene);
 			_view3.x = 540;
 			_view3.y = 240;
-			_view3.width = 116;
-			_view3.height = 79;
-			_view3.scaleX = 4;
-			_view3.scaleY = 4;
+			_view3.width = 464;
+			_view3.height = 316;
 			_view3.antiAlias = 4;
 			_view3.camera.x = 300;
 			_view3.camera.y = 500;
@@ -338,8 +336,8 @@ package
 			_view2.height = stage.stageHeight / 576 * 200;
 			_view3.x = stage.stageWidth / 1024 * 540;
 			_view3.y = stage.stageHeight / 576 * 240;
-			_view3.width = stage.stageWidth / 1024 * 116;
-			_view3.height = stage.stageHeight / 576 * 79;
+			_view3.width = stage.stageWidth / 1024 * 464;
+			_view3.height = stage.stageHeight / 576 * 316;
 
 			Signature.x = 10;
 			Signature.y = stage.stageHeight - Signature.height - 10;
