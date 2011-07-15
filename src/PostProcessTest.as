@@ -9,6 +9,7 @@ package
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
+	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.SlowFilteredShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
@@ -77,8 +78,8 @@ package
 		private var _envMap : CubeMap;
 		private var _count : Number = 0;
 		private var _lights : Array;
-		private var _shadowMethod : SlowFilteredShadowMapMethod;
-		private var _shadowMethod2 : SlowFilteredShadowMapMethod;
+		private var _shadowMethod : FilteredShadowMapMethod;
+		private var _shadowMethod2 : FilteredShadowMapMethod;
 		private var _dofFilter : DepthOfFieldFilter3D;
 
 		public function PostProcessTest()
@@ -92,7 +93,7 @@ package
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			_controller.bodyMaterial.specularMethod = null;
 			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new SlowFilteredShadowMapMethod(_light3);
+			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new FilteredShadowMapMethod(_light3);
 
 			Signature = Sprite(new SignatureSwf());
 			Signature.y = stage.stageHeight - Signature.height;
@@ -239,7 +240,7 @@ package
 			material.ambientColor = 0x202030;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
-			material.shadowMethod = _shadowMethod = new SlowFilteredShadowMapMethod(_light3);
+			material.shadowMethod = _shadowMethod = new FilteredShadowMapMethod(_light3);
 			material.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);

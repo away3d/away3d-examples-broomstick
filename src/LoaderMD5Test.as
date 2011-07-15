@@ -82,8 +82,8 @@ package
 		private var _envMap : CubeMap;
 		private var _count : Number = 0;
 		private var _lights : Array;
-		private var _shadowMethod : SlowFilteredShadowMapMethod;
-		private var _shadowMethod2 : SlowFilteredShadowMapMethod;
+		private var _shadowMethod : FilteredShadowMapMethod;
+		private var _shadowMethod2 : FilteredShadowMapMethod;
 
 		public function LoaderMD5Test()
 		{
@@ -107,7 +107,7 @@ package
 			_controller.addEventListener(MonsterEvent.MESH_COMPLETE, onMeshComplete);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
 			_controller.bodyMaterial.lights = _lights;
-			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new SlowFilteredShadowMapMethod(_light3);
+			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new FilteredShadowMapMethod(_light3);
 		}
 		
 		private function onMeshComplete(event : MonsterEvent) : void
@@ -239,7 +239,7 @@ package
 			material.ambientColor = 0x202030;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
-			material.shadowMethod = _shadowMethod = new SlowFilteredShadowMapMethod(_light3);
+			material.shadowMethod = _shadowMethod = new FilteredShadowMapMethod(_light3);
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			material.specularMethod = null;
 			var plane : Plane = new Plane(material, 50000, 50000, 1, 1, false);
