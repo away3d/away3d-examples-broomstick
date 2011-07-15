@@ -67,11 +67,19 @@ package
 			_mesh1.mouseEnabled = true;
 			_mesh1.mouseDetails = true;
 			_mesh2.mouseDetails = true;
+			_mesh1.addEventListener(MouseEvent3D.CLICK, onClick);
+			_mesh2.addEventListener(MouseEvent3D.CLICK, onClick);
 			_mesh1.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
 			_mesh2.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
 			_camController = new HoverDragController(_view.camera, stage);
 
 			this.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
+		}
+
+		private function onClick(event : MouseEvent3D) : void
+		{
+			var material : BitmapMaterial = event.target.material;
+			material.mipmap = !material.mipmap;
 		}
 
 		private function onMouseMove(event : MouseEvent3D) : void
@@ -91,7 +99,7 @@ package
 			if (_dirX > 0 && _container.x > 200) _dirX = -1;
 			if (_dirY > 0 && _container.y > 200) _dirY = -1;
 			if (_dirX < 0 && _container.x < -100) _dirX = 1;
-			if (_dirY < 0 && _container.y < -100) _dirY = 1;
+			if (_dirY > 0 && _container.y < -200) _dirY = 1;
 			_view.render();
 		}
 	}
