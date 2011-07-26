@@ -238,7 +238,7 @@ package
 
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;
-			material.transparent = true;
+			material.alphaBlending = true;
 			material.addMethod(new FogMethod(_view1.camera.lens.far * .5, 0x000000));
 			sprite = new Sprite3D(material, 200, 200);
 			_light.addChild(sprite);
@@ -246,7 +246,7 @@ package
 			sprite = new Sprite3D(material, 200, 200);
 			material.addMethod(new FogMethod(_view1.camera.lens.far * .5, 0x000000));
 //			material.blendMode = BlendMode.ADD;
-			material.transparent = true;
+			material.alphaBlending = true;
 			_light2.addChild(sprite);
 
 			_envMap = new CubeMap(new EnvPosX().bitmapData, new EnvNegX().bitmapData,
@@ -258,6 +258,7 @@ package
 			material.lights = _lights;
 			material.specular = 1;
 			material.ambientColor = 0x505060;
+			material.ambient = 1;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
 			material.addMethod(_projectionMethod);

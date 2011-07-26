@@ -25,19 +25,20 @@ package
 		private var _material1 : BitmapMaterial;
 		private var _material2 : BitmapMaterial;
 		private var _camController:HoverDragController;
-		private var _container : Sprite;
+		private var _viewContainer : Sprite;
 		private var _dirX : Number = 1;
 		private var _dirY : Number = 1;
+		private var _container3D : ObjectContainer3D;
 
 		public function InteractionTest()
 		{
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 
-			_container = new Sprite();
-			_container.x = -100;
-			_container.y = 50;
-			addChild(_container);
+			_viewContainer = new Sprite();
+			_viewContainer.x = -100;
+			_viewContainer.y = 50;
+			addChild(_viewContainer);
 
 			_view = new View3D();
 			_view.x = 100;
@@ -45,8 +46,10 @@ package
 			_view.width = 600;
 			_view.height = 300;
 
+			_container3D = new ObjectContainer3D();
+			_view.scene.addChild(_container3D);
 			_view.antiAlias = 4;
-			_container.addChild(_view);
+			_viewContainer.addChild(_view);
 
 			var bitmapData1 : BitmapData = new BitmapData(512, 512, false, 0x000000);
 			var bitmapData2 : BitmapData = new BitmapData(512, 512, false, 0x000000);
@@ -60,13 +63,17 @@ package
 			_mesh2.bounds = new BoundingSphere();
 			_mesh1.showBounds = true;
 			_mesh2.showBounds = true;
-			_view.scene.addChild(_mesh1);
-			_view.scene.addChild(_mesh2);
+
+			_container3D.mouseChildren = false;
+			_container3D.addChild(_mesh1);
+			_container3D.addChild(_mesh2);
+
 			_mesh1.rotationY = .01;
 			_mesh2.mouseEnabled = true;
 			_mesh1.mouseEnabled = true;
 			_mesh1.mouseDetails = true;
 			_mesh2.mouseDetails = true;
+			_container3D.addEventListener(MouseEvent3D.CLICK, onContainerClick);
 			_mesh1.addEventListener(MouseEvent3D.CLICK, onClick);
 			_mesh2.addEventListener(MouseEvent3D.CLICK, onClick);
 			_mesh1.addEventListener(MouseEvent3D.MOUSE_MOVE, onMouseMove);
@@ -74,6 +81,11 @@ package
 			_camController = new HoverDragController(_view.camera, stage);
 
 			this.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
+		}
+
+		private function onContainerClick(event : MouseEvent3D) : void
+		{
+			_container3D.scaleX = _container3D.scaleY = _container3D.scaleZ = .8+Math.random()*.4;
 		}
 
 		private function onClick(event : MouseEvent3D) : void
@@ -94,12 +106,13 @@ package
 		private function handleEnterFrame(ev : Event) : void
 		{
 			_mesh1.rotationX += .01;
-			_container.x += _dirX;
-			_container.y += _dirY;
-			if (_dirX > 0 && _container.x > 200) _dirX = -1;
-			if (_dirY > 0 && _container.y > 200) _dirY = -1;
-			if (_dirX < 0 && _container.x < -100) _dirX = 1;
-			if (_dirY > 0 && _container.y < -200) _dirY = 1;
+			_viewContainer.x += _dirX;
+			_viewContainer.y += _dirY;
+			if (_dirX > 0 && _viewContainer.x > 200) _dirX = -1;
+			if (_dirY > 0 && _viewContainer.y > 200) _dirY = -1;
+			if (_dirX < 0 && _viewContainer.x < -100) _dirX = 1;
+			if (_dirY > 0 && _viewContainer.y < -200) _dirY = 1;
+
 			_view.render();
 		}
 	}

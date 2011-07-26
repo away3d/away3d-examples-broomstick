@@ -152,8 +152,9 @@ package
 				var material : BitmapMaterial = new BitmapMaterial(new Teeth().bitmapData);
 				material.lights = [ _light2, _light3 ];
 				material.specular = 2;
-				material.transparent = true;
+				material.alphaBlending = true;
 				material.ambientColor = 0x202030;
+				material.ambient = 1;
 				_mesh.subMeshes[0].material = material;
 		
 				material = new BitmapMaterial(new Skin().bitmapData);
@@ -161,6 +162,7 @@ package
 				material.gloss = 20;
 				material.specular = 2;
 				material.ambientColor = 0x202030;
+				material.ambient = 1;
 				material.specularMap = new Spec().bitmapData;
 				material.normalMap = new Norm().bitmapData;
 				_mesh.material = material;

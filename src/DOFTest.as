@@ -87,6 +87,7 @@ package
 
 			_dofFilter.focusTarget = _roamer;
 			elementMaterial.ambientColor = 0x303040;
+			elementMaterial.ambient = 1;
 			elementMaterial.lights = [ _light, _light2 ];
 
 			_view.scene.addChild(_roamer);
