@@ -77,6 +77,7 @@ package {
 			
 			//Material ambientColor affect the contrast of the shadow 
 			planeMaterial.ambientColor = 0xCCCCCC;
+			planeMaterial.ambient = 1;
 			//SoftShadowMapMethod step size is to change the neighbour filtering
 			planeMaterial.shadowMethod = new FilteredShadowMapMethod(light);//new SoftShadowMapMethod(light);
 			var plane : Plane = new Plane(planeMaterial, 2000, 2000, 1, 1, false);
@@ -88,6 +89,7 @@ package {
 			material.shadowMethod = new SoftShadowMapMethod(light);
 			material.lights = [light];
 			material.ambientColor = 0xCCCCCC;
+			material.ambient = 1;
 			var sphere:Sphere=new Sphere(material,50);
 			sphere.y=50;
 			sphere.castsShadows=true;
@@ -97,6 +99,7 @@ package {
 			material2.shadowMethod = new SoftShadowMapMethod(light);
 			material2.lights = [light];
 			material2.ambientColor = 0xCCCCCC;
+			material2.ambient = 1;
 			var sphere2:Sphere=new Sphere(material2,150);
 			sphere2.y=250;
 			sphere2.x=250;

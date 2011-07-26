@@ -38,6 +38,7 @@ package
 			_material.repeat = true;
 			_material.normalMap = new Normals().bitmapData;
 			_material.ambientColor = 0x080820;
+			_material.ambient = 1;
 			_mesh = new Sphere(_material, 400);
 			_view.scene.addChild(_mesh);
 			_mesh.rotationY = .01;

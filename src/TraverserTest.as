@@ -117,6 +117,7 @@ package
 			_material2 = new ColorMaterial(0xffffff);
 			_material2.normalMap = new NormalMapAsset().bitmapData;
 			_material2.ambientColor = 0x111122;
+			_material2.ambient = 1;
 //			ColorMaterial(_material2).alpha = .5;
 			_material2.gloss = 250;
 			_material1 = new BitmapMaterial(new TextureAsset().bitmapData);

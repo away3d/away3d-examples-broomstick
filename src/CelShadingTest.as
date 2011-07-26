@@ -85,6 +85,7 @@ package
 			var len : uint = _container.numChildren;
 			var material : ColorMaterial = new ColorMaterial(0xe24062 /*0xfbcbc1*/);
 			material.ambientColor = 0xaaaaaa; //0xdd5525;
+			material.ambient = 1; //0xdd5525;
 			material.specular = .25;
 			material.diffuseMethod = new CelDiffuseMethod(2);
 			material.specularMethod = new CelSpecularMethod();

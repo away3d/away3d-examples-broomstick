@@ -111,6 +111,7 @@ package
 			_material.gloss = 10;
 			_material.specular = 3;
 			_material.ambientColor = 0x303040;
+			_material.ambient = 1;
 			_subsurfaceMethod.scatterColor = 0xff7733; //0xff9966;
 			_subsurfaceMethod.scattering = .05;
 			_subsurfaceMethod.translucency = 4;

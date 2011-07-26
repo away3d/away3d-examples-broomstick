@@ -126,6 +126,7 @@
 			material.diffuseMethod = terrainMethod;
             material.normalMap = new Normals().bitmapData;
             material.ambientColor = 0x202030;
+			material.ambient = 1;
             material.specular = .2;
 
             fog = new FogMethod(4000, 0xcfd9de);

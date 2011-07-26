@@ -106,6 +106,7 @@ package
 			method.scatterColor = 0xffaa00;
 			method.translucency = 5;
 			material.ambientColor = 0x202025; //0xdd5525;
+			material.ambient = 1;
 			material.diffuseMethod = method;
 			material.gloss = 100;
 			material.specular = .5;

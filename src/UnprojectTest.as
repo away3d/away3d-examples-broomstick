@@ -50,6 +50,7 @@ package
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 //			material.normalMap = new Normals().bitmapData;
 			material.ambientColor = 0x080820;
+			material.ambient = 1;
 //			material.specularMethod = null;
 
 			material.normalMap;

@@ -84,6 +84,7 @@ package
 		private var _lights : Array;
 		private var _shadowMethod : FilteredShadowMapMethod;
 		private var _shadowMethod2 : FilteredShadowMapMethod;
+		private var _skybox : SkyBox;
 
 		public function LoaderMD5Test()
 		{
@@ -206,7 +207,7 @@ package
 			_light2.y = 200;
 			_light2.z = 1400;
 			_light2.color = 0x1111ff;
-			_light3 = new DirectionalLight(0, -20, 10);
+			_light3 = new DirectionalLight(-50, -20, 10);
 			_light3.color = 0xffffee;
 			_light3.castsShadows = true;
 
@@ -218,7 +219,7 @@ package
 			
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;
-			material.transparent = true;
+			material.alphaBlending = true;
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 			sprite = new Sprite3D(material, 200, 200);
 			_light.addChild(sprite);
@@ -226,17 +227,19 @@ package
 			sprite = new Sprite3D(material, 200, 200);
 			material.addMethod(new FogMethod(_view.camera.lens.far*.5, 0x000000));
 //			material.blendMode = BlendMode.ADD;
-			material.transparent = true;
+			material.alphaBlending = true;
 			_light2.addChild(sprite);
 
 			_envMap = new CubeMap(	new EnvPosX().bitmapData,  new EnvNegX().bitmapData,
 									new EnvPosY().bitmapData,  new EnvNegY().bitmapData,
 									new EnvPosZ().bitmapData,  new EnvNegZ().bitmapData);
-			_view.scene.addChild(new SkyBox(_envMap));
+			_skybox = new SkyBox(_envMap);
+			_view.scene.addChild(_skybox);
 
 			material = new BitmapMaterial(new FloorDiffuse().bitmapData, true, true, true);
 			material.lights = _lights;
 			material.ambientColor = 0x202030;
+			material.ambient = 1;
 			material.normalMap = new FloorNormals().bitmapData;
 			material.specularMap = new FloorSpecular().bitmapData;
 			material.shadowMethod = _shadowMethod = new FilteredShadowMapMethod(_light3);

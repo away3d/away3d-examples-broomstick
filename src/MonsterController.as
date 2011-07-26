@@ -138,6 +138,7 @@ package
 			_bodyMaterial.gloss = 20;
 			_bodyMaterial.specular = 1.5;
 			_bodyMaterial.ambientColor = 0x505060;
+			_bodyMaterial.ambient = 1;
 			_bodyMaterial.specularMap = new BodySpec().bitmapData;
 			_bodyMaterial.normalMap = new BodyNorms().bitmapData;
 		}

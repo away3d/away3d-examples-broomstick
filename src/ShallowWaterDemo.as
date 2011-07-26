@@ -188,12 +188,14 @@ package
 			_liquidMaterial.specular = 0.5;
 			_liquidMaterial.ambient = 0.25;
 			_liquidMaterial.ambientColor = 0x111199;
+			_liquidMaterial.ambient = 1;
 			_liquidMaterial.addMethod(new EnvMapMethod(_cubeMap, 1));
 			_liquidMaterial.lights = [_light];
 			_colorMaterial = new ColorMaterial(_liquidMaterial.color);
 			_colorMaterial.specular = _liquidMaterial.specular;
 			_colorMaterial.ambient = _liquidMaterial.ambient;
 			_colorMaterial.ambientColor = 0x555555;
+			_colorMaterial.ambient = 1;
 			_colorMaterial.diffuseMethod = new BasicDiffuseMethod();
 			_colorMaterial.lights = [_light];
 
