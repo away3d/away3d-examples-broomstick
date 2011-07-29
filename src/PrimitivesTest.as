@@ -6,6 +6,7 @@ package
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.ColorMaterial;
+	import away3d.materials.methods.OutlineMethod;
 	import away3d.primitives.Cube;
 
 	import away3d.primitives.Sphere;
@@ -50,6 +51,7 @@ package
 			var red : ColorMaterial = new ColorMaterial(0xFF0000);
 			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
 			material.normalMap = new Normals().bitmapData;
+			material.addMethod(new OutlineMethod(0xff0000, 20));
 			material.ambientColor = 0x080820;
 			material.ambient = 1;
 
@@ -96,7 +98,7 @@ package
 
 		private function onEnterFrame(ev : Event) : void
 		{
-			_ctr.rotationY += .1;
+			_ctr.rotationZ += .1;
 			//_ctr.rotationX = 20 * Math.sin(getTimer() * 0.002);
 			_view.render();
 		}
