@@ -13,7 +13,8 @@ package
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.methods.CelDiffuseMethod;
 	import away3d.materials.methods.CelSpecularMethod;
-	
+	import away3d.materials.methods.OutlineMethod;
+
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -36,6 +37,7 @@ package
 		public function CelShadingTest()
 		{
 			_view = new View3D();
+			_view.backgroundColor = 0x101020;
 			_view.antiAlias = 4;
 			_light = new PointLight(); // DirectionalLight();
 			_light.x = 1000;
@@ -83,15 +85,16 @@ package
 		{
 			var mesh : Mesh;
 			var len : uint = _container.numChildren;
-			var material : ColorMaterial = new ColorMaterial(0xe24062 /*0xfbcbc1*/);
-			material.ambientColor = 0xaaaaaa; //0xdd5525;
+			var material : ColorMaterial = new ColorMaterial(0xfbcbc1);
+			material.ambientColor = 0xdd5525;
 			material.ambient = 1; //0xdd5525;
 			material.specular = .25;
-			material.diffuseMethod = new CelDiffuseMethod(2);
+			material.diffuseMethod = new CelDiffuseMethod(3);
 			material.specularMethod = new CelSpecularMethod();
-			CelSpecularMethod(material.specularMethod).smoothness = .2;
-			CelDiffuseMethod(material.diffuseMethod).smoothness = .1;
-			material.lights = [ _light3 ];
+			material.addMethod(new OutlineMethod(0x000000, 2/50));
+			CelSpecularMethod(material.specularMethod).smoothness = .01;
+			CelDiffuseMethod(material.diffuseMethod).smoothness = .01;
+			material.lights = [ _light, _light2, _light3 ];
 
 			for (var i : uint = 0; i < len; ++i) {
 				mesh = Mesh(_container.getChildAt(i));

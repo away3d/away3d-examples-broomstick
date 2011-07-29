@@ -10,14 +10,17 @@ package
 	import away3d.loaders.misc.AssetLoaderContext;
 	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
-	
+	import away3d.materials.methods.OutlineMethod;
+
+	import flash.display.BitmapData;
+
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 
-	[SWF(width="1024", height="576", frameRate="60")]
+	[SWF(width="1024", height="576", frameRate="60", backgroundColor="0xffffff")]
 	public class LightingTest extends Sprite
 	{
 		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
@@ -41,10 +44,19 @@ package
 		private var _mesh : Mesh;
 		private var _camController : HoverDragController;
 
+		private var _bg : BitmapData;
+
 		public function LightingTest()
 		{
 			_view = new View3D();
 			_view.antiAlias = 4;
+			_view.backgroundColor = 0x0010000;
+			_view.backgroundAlpha = 0;
+
+			_bg = new BitmapData(500, 300, false, 0);
+			_bg.perlinNoise(50, 50, 8, 5, true, true, 7, true);
+			_view.backgroundImage = _bg;
+
 			_light = new PointLight(); // DirectionalLight();
 			_light.x = -5000;
 			_light.y = 5000;
@@ -80,7 +92,7 @@ package
 			_view.scene.addChild(_loader);
 
 			this.addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
-			stage.addEventListener(MouseEvent.CLICK, onClick);
+//			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.RESIZE, onStageResize);
@@ -124,7 +136,7 @@ package
 
 		private function _handleEnterFrame(ev : Event) : void
 		{
-			_loader.rotationY += 0.3;
+			_loader.rotationY += 1;
 			_view.render();
 		}
 	}
