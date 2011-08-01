@@ -154,7 +154,7 @@ package
 
 		private function initMaterial() : void
 		{
-			var material : BitmapMaterial = new BitmapMaterial(new BitmapData(512, 512, true, 0x80202050));
+			var material : BitmapMaterial = new BitmapMaterial(new BitmapData(512, 512, true, 0xaa404070));
 			material.alphaBlending = true;
 			material.lights = [ _blueLight, _yellowLight ];
 			material.repeat = true;
