@@ -2,20 +2,16 @@ package
 {
 	import away3d.containers.View3D;
 	import away3d.debug.AwayStats;
-	import away3d.entities.Mesh;
-	import away3d.events.LoaderEvent;
 	import away3d.lights.PointLight;
-	import away3d.loaders.Loader3D;
-	import away3d.loaders.misc.AssetLoaderContext;
-	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
-	import away3d.materials.methods.EnvMapMethod;
 	import away3d.materials.methods.FresnelEnvMapMethod;
 	import away3d.materials.methods.FresnelSpecularMethod;
+	import away3d.materials.methods.SimpleWaterNormalMethod;
 	import away3d.materials.utils.CubeMap;
+	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
 	
-	import com.bit101.components.HSlider;
+	import flash.display.BitmapData;
 
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -25,25 +21,15 @@ package
 	import flash.geom.Vector3D;
 
 	[SWF(width="1024", height="576", frameRate="60")]
-	public class EnvMapTest extends Sprite
+	public class WaterTest extends Sprite
 	{
 		private var _view : View3D;
 
-		private var _loader : Loader3D;
 		private var _yellowLight : PointLight;
 		private var _blueLight : PointLight;
 		
-		[Embed(source="/../embeds/head/head.obj", mimeType="application/octet-stream")]
-		private var OBJData : Class;
-		
-		[Embed(source="/../embeds/head/Images/Map-COL.jpg")]
-		private var Albedo : Class;
-
-		[Embed(source="/../embeds/head/Images/Map-spec.jpg")]
-		private var Specular : Class;
-
-		[Embed(source="/../embeds/head/Images/Infinite-Level_02_Tangent_NoSmoothUV.jpg")]
-		private var Normals : Class;
+		[Embed(source="/../embeds/w_normalmap.jpg")]
+		private var WaterNormals1 : Class;
 
 		[Embed(source="/../embeds/diffuseEnvMap/night_m04_posX.jpg")]
 		private var DiffPosX : Class;
@@ -93,9 +79,11 @@ package
 		private var _envMap : CubeMap;
 
 		private var _camController : HoverDragController;
-		private var _envMapMethod : EnvMapMethod;
+		private var _envMapMethod : FresnelEnvMapMethod;
+		private var _normalMethod : SimpleWaterNormalMethod;
+		private var _plane : Plane;
 
-		public function EnvMapTest()
+		public function WaterTest()
 		{
 			super();
 
@@ -131,35 +119,19 @@ package
 			_blueLight.y = 100;
 
 			_camController = new HoverDragController(_view.camera, stage);
+			_view.camera.lens.far = 15000;
 			addChild(new AwayStats(_view));
 			
-			Loader3D.enableParser(OBJParser);
-			
-			_loader = new Loader3D();
-			_loader.addEventListener(LoaderEvent.RESOURCE_COMPLETE, onResourceComplete);
-			_loader.parseData(OBJData, null, new AssetLoaderContext(false));
-			_loader.scale(100);
-
-			_view.scene.addChild(_loader);
+			_plane = new Plane(null, 15000, 15000, 1, 1, false);
+			_plane.geometry.subGeometries[0].scaleUV(5);
+			_view.scene.addChild(_plane);
 			_view.scene.addChild(_yellowLight);
 			_view.scene.addChild(_blueLight);
 			_view.scene.addChild(new SkyBox(_envMap));
+			initMaterial();
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.RESIZE, onStageResize);
-		}
-
-		private function initControls() : void
-		{
-			var slider : HSlider = new HSlider();
-			slider.x = 20;
-			slider.y = 100;
-			slider.minimum = 0;
-			slider.maximum = 1;
-			slider.value = _envMapMethod.alpha;
-			slider.addEventListener(Event.CHANGE, onSliderChange);
-			slider.addEventListener(MouseEvent.MOUSE_DOWN, stopEvent);
-			addChild(slider);
 		}
 
 		private function stopEvent(event : MouseEvent) : void
@@ -180,35 +152,33 @@ package
 			Signature.y = stage.stageHeight - Signature.height;
 		}
 
-		private function onResourceComplete(ev : LoaderEvent) : void
+		private function initMaterial() : void
 		{
-			var mesh : Mesh;
-			var len : uint = _loader.numChildren;
-			var material : BitmapMaterial = new BitmapMaterial(new Albedo().bitmapData);
-//			var material : ColorMaterial = new ColorMaterial(0xffffff);
-//			material.normalMap = new Normals().bitmapData;
-//			material.ambientMethod = new EnvMapAmbientMethod(_diffuseMap);
-			material.specularMethod = new FresnelSpecularMethod(true);
+			var material : BitmapMaterial = new BitmapMaterial(new BitmapData(512, 512, true, 0x80202050));
+			material.alphaBlending = true;
 			material.lights = [ _blueLight, _yellowLight ];
-//			material.diffuseMethod = new EnvMapDiffuseMethod(_diffuseMap);
-			material.addMethod(_envMapMethod = new EnvMapMethod(_envMap));
-			material.gloss = 10;
-//			material.lights = [ _yellowLight, _blueLight ];
-			material.specular = .25;
-			material.specularMap = new Specular().bitmapData;
+			material.repeat = true;
+			material.normalMethod = _normalMethod = new SimpleWaterNormalMethod(new WaterNormals1().bitmapData, new WaterNormals1().bitmapData);
+			material.addMethod(_envMapMethod = new FresnelEnvMapMethod(_envMap));
+			_envMapMethod.normalReflectance = .2;
+			material.specularMethod = new FresnelSpecularMethod();
+			FresnelSpecularMethod(material.specularMethod).normalReflectance = .3;
+			material.gloss = 100;
+			material.specular = 1;
 
-			for (var i : uint = 0; i < len; ++i) {
-				mesh = Mesh(_loader.getChildAt(i));
-				mesh.material = material;
-			}
-			initControls();
+			_plane.material = material;
 		}
 
 
 		private function _handleEnterFrame(ev : Event) : void
 		{
-			_loader.rotationY += .5;
 			//_ctr.rotationX = 20 * Math.sin(getTimer() * 0.002);
+			if (_normalMethod) {
+				_normalMethod.water1OffsetX += .001;
+				_normalMethod.water1OffsetY += .001;
+				_normalMethod.water2OffsetX += .0007;
+				_normalMethod.water2OffsetY += .0006;
+			}
 			_view.render();
 		}
 	}

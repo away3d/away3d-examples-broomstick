@@ -12,6 +12,7 @@ package
 	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.HardShadowMapMethod;
+	import away3d.materials.methods.OutlineMethod;
 	import away3d.materials.methods.ShadingMethodBase;
 	import away3d.materials.methods.SlowFilteredShadowMapMethod;
 	import away3d.materials.methods.SoftShadowMapMethod;
@@ -107,6 +108,7 @@ package
 			_controller = new MonsterController();
 			_controller.addEventListener(MonsterEvent.MESH_COMPLETE, onMeshComplete);
 			_controller.bodyMaterial.addMethod(new FogMethod(_view.camera.lens.far * .5, 0x000000));
+			_controller.bodyMaterial.addMethod(new OutlineMethod(0xff0000, 2, false));
 			_controller.bodyMaterial.lights = _lights;
 			_controller.bodyMaterial.shadowMethod = _shadowMethod2 = new FilteredShadowMapMethod(_light3);
 		}
