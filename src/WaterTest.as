@@ -4,6 +4,8 @@ package
 	import away3d.debug.AwayStats;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
+	import away3d.materials.methods.EnvMapMethod;
+	import away3d.materials.methods.FogMethod;
 	import away3d.materials.methods.FresnelEnvMapMethod;
 	import away3d.materials.methods.FresnelSpecularMethod;
 	import away3d.materials.methods.SimpleWaterNormalMethod;
@@ -33,22 +35,22 @@ package
 		private var WaterNormals1 : Class;
 
 
-		[Embed(source="/../embeds/envMap/arch_positive_x.jpg")]
+		[Embed(source="/../embeds/envMap/sky_posX.jpg")]
 		private var EnvPosX : Class;
 
-		[Embed(source="/../embeds/envMap/arch_positive_y.jpg")]
+		[Embed(source="/../embeds/envMap/sky_posY.jpg")]
 		private var EnvPosY : Class;
 
-		[Embed(source="/../embeds/envMap/arch_positive_z.jpg")]
+		[Embed(source="/../embeds/envMap/sky_posZ.jpg")]
 		private var EnvPosZ : Class;
 
-		[Embed(source="/../embeds/envMap/arch_negative_x.jpg")]
+		[Embed(source="/../embeds/envMap/sky_negX.jpg")]
 		private var EnvNegX : Class;
 
-		[Embed(source="/../embeds/envMap/arch_negative_y.jpg")]
+		[Embed(source="/../embeds/envMap/sky_negY.jpg")]
 		private var EnvNegY : Class;
 
-		[Embed(source="/../embeds/envMap/arch_negative_z.jpg")]
+		[Embed(source="/../embeds/envMap/sky_negZ.jpg")]
 		private var EnvNegZ : Class;
 		
 		//signature variables
@@ -139,7 +141,8 @@ package
 			material.lights = [ _blueLight, _yellowLight ];
 			material.repeat = true;
 			material.normalMethod = _normalMethod = new SimpleWaterNormalMethod(new WaterNormals1().bitmapData, new WaterNormals1().bitmapData);
-			material.addMethod(_envMapMethod = new FresnelEnvMapMethod(_envMap));
+			_envMapMethod = new FresnelEnvMapMethod(_envMap);
+			material.addMethod(new EnvMapMethod(_envMap));
 			_envMapMethod.normalReflectance = .2;
 			material.specularMethod = new FresnelSpecularMethod();
 			FresnelSpecularMethod(material.specularMethod).normalReflectance = .3;
