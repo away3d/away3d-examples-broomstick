@@ -49,6 +49,7 @@ package
 			_container3D = new ObjectContainer3D();
 			_view.scene.addChild(_container3D);
 			_view.antiAlias = 4;
+			_view.forceMouseMove = true;
 			_viewContainer.addChild(_view);
 
 			var bitmapData1 : BitmapData = new BitmapData(512, 512, false, 0x000000);
@@ -64,7 +65,7 @@ package
 			_mesh1.showBounds = true;
 			_mesh2.showBounds = true;
 
-			_container3D.mouseChildren = false;
+//			_container3D.mouseChildren = false;
 			_container3D.addChild(_mesh1);
 			_container3D.addChild(_mesh2);
 
