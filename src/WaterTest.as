@@ -18,6 +18,7 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
 
 	[SWF(width="1024", height="576", frameRate="60")]
@@ -179,6 +180,8 @@ package
 				_normalMethod.water2OffsetX += .0007;
 				_normalMethod.water2OffsetY += .0006;
 			}
+//			if (stage.stage3Ds[0].context3D)
+//				stage.stage3Ds[0].context3D.setScissorRectangle(new Rectangle(0, 0, 50, 50));
 			_view.render();
 		}
 	}
