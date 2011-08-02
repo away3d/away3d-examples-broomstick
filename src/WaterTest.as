@@ -32,24 +32,6 @@ package
 		[Embed(source="/../embeds/w_normalmap.jpg")]
 		private var WaterNormals1 : Class;
 
-		[Embed(source="/../embeds/diffuseEnvMap/night_m04_posX.jpg")]
-		private var DiffPosX : Class;
-
-		[Embed(source="/../embeds/diffuseEnvMap/night_m04_posY.jpg")]
-		private var DiffPosY : Class;
-
-		[Embed(source="/../embeds/diffuseEnvMap/night_m04_posZ.jpg")]
-		private var DiffPosZ : Class;
-
-		[Embed(source="/../embeds/diffuseEnvMap/night_m04_negX.jpg")]
-		private var DiffNegX : Class;
-
-		[Embed(source="/../embeds/diffuseEnvMap/night_m04_negY.jpg")]
-		private var DiffNegY : Class;
-
-		[Embed(source="/../embeds/diffuseEnvMap/night_m04_negZ.jpg")]
-		private var DiffNegZ : Class;
-
 
 		[Embed(source="/../embeds/envMap/arch_positive_x.jpg")]
 		private var EnvPosX : Class;
@@ -101,12 +83,9 @@ package
 			
 			addChild(Signature);
 			
-			_diffuseMap = new CubeMap(new DiffPosX().bitmapData, new DiffNegX().bitmapData,
-					new DiffPosY().bitmapData, new DiffNegY().bitmapData,
-					new DiffPosZ().bitmapData, new DiffNegZ().bitmapData);
-			_envMap = new CubeMap(new EnvPosX().bitmapData, new EnvNegX().bitmapData,
-					new EnvPosY().bitmapData, new EnvNegY().bitmapData,
-					new EnvPosZ().bitmapData, new EnvNegZ().bitmapData);
+			_envMap = new CubeMap(	new EnvPosX().bitmapData, new EnvNegX().bitmapData,
+									new EnvPosY().bitmapData, new EnvNegY().bitmapData,
+									new EnvPosZ().bitmapData, new EnvNegZ().bitmapData);
 
 			_yellowLight = new PointLight();
 			_yellowLight.color = 0xd2cfb9;
