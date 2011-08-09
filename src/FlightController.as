@@ -177,7 +177,7 @@ package {
 			_referenceX = mouseX;
 			_referenceY = mouseY;
 			_targetXRad += dx * _dragSpeed;
-			_targetYRad -= dy * _dragSpeed;
+			_targetYRad += dy * _dragSpeed;
 			if (_targetYRad > bound) _targetYRad = bound;
 			else if (_targetYRad < -bound) _targetYRad = -bound;
 		}

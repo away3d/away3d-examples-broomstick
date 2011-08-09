@@ -3,6 +3,7 @@ package
 	import away3d.containers.View3D;
 	import away3d.entities.Mesh;
 	import away3d.events.LoaderEvent;
+	import away3d.events.MouseEvent3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
@@ -10,7 +11,6 @@ package
 	import away3d.loaders.misc.AssetLoaderContext;
 	import away3d.loaders.parsers.OBJParser;
 	import away3d.materials.BitmapMaterial;
-	import away3d.materials.methods.OutlineMethod;
 
 	import flash.display.BitmapData;
 
@@ -91,6 +91,8 @@ package
 			_loader.scale(50);
 			_view.scene.addChild(_loader);
 
+			_view.forceMouseMove = true;
+
 			this.addEventListener(Event.ENTER_FRAME, _handleEnterFrame);
 //			stage.addEventListener(MouseEvent.CLICK, onClick);
 			stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -121,16 +123,24 @@ package
 			material.specularMap = new Specular().bitmapData;
 			material.specular = .5;
 			material.gloss = 50;
-			material.lights = [_light, _light2, _light3];
+			material.lights = [_light, _light2, _light3 ];
 			//			material.specularMethod = null;
 
 			for (var i : uint = 0; i < len; ++i) {
 				mesh = Mesh(_loader.getChildAt(i));
 				mesh.material = material;
-				mesh.geometry.subGeometries[0].autoDeriveVertexNormals = true;
-				mesh.geometry.subGeometries[0].autoDeriveVertexTangents = true;
+//				mesh.geometry.subGeometries[0].autoDeriveVertexNormals = true;
+//				mesh.geometry.subGeometries[0].autoDeriveVertexTangents = true;
 			}
 			_mesh = mesh;
+			_mesh.mouseEnabled = true;
+			_mesh.mouseDetails = true;
+			_mesh.addEventListener(MouseEvent3D.CLICK, onClick3D)
+		}
+
+		private function onClick3D(event : MouseEvent3D) : void
+		{
+			_mesh.scale(Math.random()+.5);
 		}
 
 

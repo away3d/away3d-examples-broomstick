@@ -5,13 +5,13 @@ package
 	import away3d.entities.Mesh;
 	import away3d.entities.Sprite3D;
 	import away3d.filters.DepthOfFieldFilter3D;
+	import away3d.filters.MotionBlurFilter3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.methods.FilteredShadowMapMethod;
 	import away3d.materials.methods.FogMethod;
-	import away3d.materials.methods.SlowFilteredShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
@@ -105,13 +105,13 @@ package
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
-		
+
 		private function onMeshComplete(event : MonsterEvent) : void
 		{
 			_dofFilter.focusTarget = _controller.mesh;
 			_view.scene.addChild(_controller.mesh);
 		}
-		
+
 		private function onKeyDown(event : KeyboardEvent) : void
 		{
 			switch (event.keyCode) {
@@ -190,7 +190,8 @@ package
 //			_view.filters3d = [ new MotionBlurFilter3D(.8) ];
 			_dofFilter = new DepthOfFieldFilter3D(20, 20);
 			_dofFilter.range = 1000;
-			_view.filters3d = [ _dofFilter ];
+			_view.filters3d = [ _dofFilter, new MotionBlurFilter3D(.5) ];
+//			_view.filters3d = [ new BlurFilter3D(10, 10) ];
 			_view.camera.lens.far = 5000;
 			_view.camera.z = -200;
 			_view.camera.y = 160;
