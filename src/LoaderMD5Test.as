@@ -5,6 +5,7 @@ package
 	import away3d.debug.AwayStats;
 	import away3d.entities.Mesh;
 	import away3d.entities.Sprite3D;
+	import away3d.filters.RadialBlurFilter3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.LightBase;
 	import away3d.lights.PointLight;
@@ -218,6 +219,8 @@ package
 			_view.scene.addChild(_light);
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
+
+			_view.filters3d = [ new RadialBlurFilter3D(20) ];
 			
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;

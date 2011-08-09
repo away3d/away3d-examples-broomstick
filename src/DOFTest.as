@@ -8,7 +8,6 @@ package
 	import away3d.entities.Mesh;
 	import away3d.filters.DepthOfFieldFilter3D;
 
-	import away3d.filters.MotionBlurFilter3D;
 	import away3d.lights.DirectionalLight;
 	import away3d.lights.PointLight;
 	import away3d.materials.ColorMaterial;
