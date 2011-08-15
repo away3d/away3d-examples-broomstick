@@ -7,8 +7,6 @@
  */
 package com.li.away3d.camera
 {
-import away3d.cameras.Camera3D;
-
 import flash.geom.Vector3D;
 
 /*
@@ -21,7 +19,7 @@ public class OCameraController
     private const TWOPI:Number = 2*PI;
     private const HALFPI:Number = PI/2;
 
-    private var _camera:Camera3D;
+    private var _camera:*;
     private var _center:Vector3D;
 
     private var _cartesianCoordinates:Vector3D;
@@ -36,7 +34,7 @@ public class OCameraController
 
     public var useAzimuthLimit:Boolean = false;
 
-    public function OCameraController(camera:Camera3D)
+    public function OCameraController(camera:*)
     {
         _camera = camera;
         _center = new Vector3D();

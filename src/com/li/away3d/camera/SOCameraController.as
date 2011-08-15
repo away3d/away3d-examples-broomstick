@@ -7,10 +7,6 @@
  */
 package com.li.away3d.camera
 {
-import away3d.cameras.Camera3D;
-
-import com.li.away3d.camera.*;
-
 import flash.geom.Vector3D;
 
 /*
@@ -29,7 +25,7 @@ public class SOCameraController
     public var orbitEasing:Number = 0.2;
     public var centerEasing:Number = 0.2;
 
-    public function SOCameraController(camera:Camera3D)
+    public function SOCameraController(camera:*)
     {
         _orbitCameraController = new OCameraController(camera);
         _targetSphericalCoordinates = _orbitCameraController.sphericalCoordinates.clone();
@@ -101,6 +97,8 @@ public class SOCameraController
         else
             _targetSphericalCoordinates.x = value;
 
+        reinforceElevation();
+
         _sphericalDirty = true;
         update();
     }
@@ -121,10 +119,22 @@ public class SOCameraController
         return _targetSphericalCoordinates.y;
     }
 
+    private function reinforceElevation():void
+    {
+        if(_orbitCameraController.elevation > _orbitCameraController.maxElevation)
+        {
+            elevation = _orbitCameraController.maxElevation;
+            _orbitCameraController.elevation = elevation;
+        }
+    }
+
     // Radius.
     public function set radius(value:Number):void
     {
         _targetSphericalCoordinates.z = containValue(value, _orbitCameraController.minRadius, _orbitCameraController.maxRadius);
+
+        reinforceElevation();
+
         _sphericalDirty = true;
         update();
     }

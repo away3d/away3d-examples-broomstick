@@ -7,10 +7,6 @@
  */
 package com.li.away3d.camera
 {
-import away3d.cameras.Camera3D;
-
-import com.li.away3d.camera.*;
-
 import com.li.general.keyboard.KeyManager;
 
 import flash.display.Sprite;
@@ -31,13 +27,13 @@ public class MKSOCameraController extends Sprite
     private var _dy:Number;
     private var _keyManager:KeyManager;
 
-    public var mouseEasing:Number = 0.005;
-    public var keyboardAngularSpeed:Number = 0.1;
-    public var keyboardLinearSpeed:Number = 10;
+    public var mouseEasing:Number = 0.01;
+    public var keyboardAngularSpeed:Number = 0.05;
+    public var keyboardLinearSpeed:Number = 50;
     public var showInteractionArea:Boolean = false;
     public var mouseInteractionEnabled:Boolean = true;
 
-    public function MKSOCameraController(camera:Camera3D)
+    public function MKSOCameraController(camera:*)
     {
         super();
         _sOCameraController = new SOCameraController(camera);
@@ -51,7 +47,7 @@ public class MKSOCameraController extends Sprite
 
         _keyManager = KeyManager.getInstance(stage);
 
-        addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+        stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
         stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 
@@ -89,9 +85,9 @@ public class MKSOCameraController extends Sprite
         if(_keyManager.keyIsDown(KeyManager.KEY_DOWN) || _keyManager.keyIsDown(KeyManager.KEY_S))
             _sOCameraController.elevation += keyboardAngularSpeed;
         if(_keyManager.keyIsDown(KeyManager.KEY_Z))
-            _sOCameraController.radius += keyboardLinearSpeed;
-        if(_keyManager.keyIsDown(KeyManager.KEY_X))
             _sOCameraController.radius -= keyboardLinearSpeed;
+        if(_keyManager.keyIsDown(KeyManager.KEY_X))
+            _sOCameraController.radius += keyboardLinearSpeed;
     }
 
     private function updateMouseInput():void
