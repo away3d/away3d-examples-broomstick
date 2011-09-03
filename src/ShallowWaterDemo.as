@@ -201,12 +201,13 @@ package
 
 			// Init plane.
 			_plane = new Plane(_liquidMaterial);
+			_plane
 			_plane.x -= gridSpacing / 2 + gridN * gridSpacing / 2;
 			_plane.z -= gridSpacing / 2 + gridN * gridSpacing / 2;
 			_plane.geometry.subGeometries[0].autoDeriveVertexNormals = false;
 			_plane.geometry.subGeometries[0].autoDeriveVertexTangents = false;
 			_plane.segmentsW = _plane.segmentsH = (gridN - 1);
-			_plane.rotationX = -90;
+			_plane.rotationX = 90;
 			_plane.width = _plane.height = (gridN - 1) * gridSpacing;
 			_min = -_plane.width / 2;
 			_max = _plane.width / 2;

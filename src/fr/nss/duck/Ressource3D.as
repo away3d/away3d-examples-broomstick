@@ -1,8 +1,9 @@
 package fr.nss.duck {
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.materials.BitmapMaterial;
 	import away3d.materials.methods.CelDiffuseMethod;
 	import away3d.materials.methods.CelSpecularMethod;
-
+	
 	import fr.nss.away4.core.animation.skeleton.NSSSkeletonSequenceController;
 	import fr.nss.duck.anim.DuckBecAnim;
 	import fr.nss.duck.anim.DuckBecEndWalk;
@@ -34,6 +35,9 @@ package fr.nss.duck {
 		public var duckBody : DuckBody;
 		public var duckBec01 : DuckBec;
 		
+		public var eyeController : NSSSkeletonSequenceController;
+		public var bodyController : NSSSkeletonSequenceController;
+		public var becController : NSSSkeletonSequenceController;
 
 		public function Ressource3D(){
 			
@@ -43,8 +47,8 @@ package fr.nss.duck {
 			duckBody=new DuckBody();duckBody.mesh.material=getMaterial();
 			duckBec01=new DuckBec();duckBec01.mesh.material=getMaterial();
 				
-			var _controller:NSSSkeletonSequenceController = NSSSkeletonSequenceController(duckEye01.mesh.animationController);
-			_controller.timeScale = 1;
+			eyeController = new NSSSkeletonSequenceController(duckEye01.mesh.animationState as SkeletonAnimationState);
+			eyeController.timeScale = 1;
 			
 			var anim:DuckEyeAnim=new DuckEyeAnim();anim.sequence.looping=false;
 			anim.sequence.name="walk";
@@ -53,14 +57,14 @@ package fr.nss.duck {
 			var duckFaceStand01:DuckFaceStand01=new DuckFaceStand01();duckFaceStand01.sequence.looping=false;duckFaceStand01.sequence.name="stand01";
 			var duckFaceStand02:DuckFaceStand02=new DuckFaceStand02();duckFaceStand02.sequence.looping=false;duckFaceStand02.sequence.name="stand02";
 			
-			_controller.addSequence(anim.sequence);
-			_controller.addSequence(duckFaceStartWalk.sequence);
-			_controller.addSequence(duckFaceEndWalk.sequence);
-			_controller.addSequence(duckFaceStand01.sequence);
-			_controller.addSequence(duckFaceStand02.sequence);
+			eyeController.addSequence(anim.sequence);
+			eyeController.addSequence(duckFaceStartWalk.sequence);
+			eyeController.addSequence(duckFaceEndWalk.sequence);
+			eyeController.addSequence(duckFaceStand01.sequence);
+			eyeController.addSequence(duckFaceStand02.sequence);
 			
 			
-			var bodyController:NSSSkeletonSequenceController = NSSSkeletonSequenceController(duckBody.mesh.animationController);
+			bodyController = new NSSSkeletonSequenceController(duckBody.mesh.animationState as SkeletonAnimationState);
 			bodyController.timeScale = 1;
 			
 			var duckBodyAnim01:DuckBodyAnimTest=new DuckBodyAnimTest();duckBodyAnim01.sequence.looping=false;duckBodyAnim01.sequence.name="walk";
@@ -75,8 +79,8 @@ package fr.nss.duck {
 			bodyController.addSequence(duckBodyStand01.sequence);
 			bodyController.addSequence(duckBodyStand02.sequence);
 			
-			var duckBecSkinController:NSSSkeletonSequenceController = NSSSkeletonSequenceController(duckBec01.mesh.animationController);
-			duckBecSkinController.timeScale = 1;
+			becController = new NSSSkeletonSequenceController(duckBec01.mesh.animationState as SkeletonAnimationState);
+			becController.timeScale = 1;
 			
 			var duckBecAnim01:DuckBecAnim=	new DuckBecAnim();duckBecAnim01.sequence.looping=false;duckBecAnim01.sequence.name="walk";
 			var duckBecStartWalk:DuckBecStartWalk=	new DuckBecStartWalk();duckBecStartWalk.sequence.looping=false;duckBecStartWalk.sequence.name="startWalk";
@@ -84,11 +88,11 @@ package fr.nss.duck {
 			var duckBecStand01:DuckBecStand01=	new DuckBecStand01();duckBecStand01.sequence.looping=false;duckBecStand01.sequence.name="stand01";
 			var duckBecStand02:DuckBecStand02=	new DuckBecStand02();duckBecStand02.sequence.looping=false;duckBecStand02.sequence.name="stand02";
 			
-			duckBecSkinController.addSequence(duckBecAnim01.sequence);
-			duckBecSkinController.addSequence(duckBecStartWalk.sequence);
-			duckBecSkinController.addSequence(duckBecEndWalk.sequence);
-			duckBecSkinController.addSequence(duckBecStand01.sequence);
-			duckBecSkinController.addSequence(duckBecStand02.sequence);
+			becController.addSequence(duckBecAnim01.sequence);
+			becController.addSequence(duckBecStartWalk.sequence);
+			becController.addSequence(duckBecEndWalk.sequence);
+			becController.addSequence(duckBecStand01.sequence);
+			becController.addSequence(duckBecStand02.sequence);
 			
 			
 			
@@ -102,6 +106,7 @@ package fr.nss.duck {
 			var material :BitmapMaterial  = new BitmapMaterial(new DuckTexture().bitmapData);
 			//var material : ColorMaterial = new ColorMaterial(0xCCCCCC );
 			material.ambientColor = 0xCCCCCC; //0xdd5525;
+			material.ambient = 1;
 			material.specular = .05;
 			material.diffuseMethod = new CelDiffuseMethod(4);
 			material.specularMethod = new CelSpecularMethod();

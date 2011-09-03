@@ -51,7 +51,7 @@ public class MKSOCameraController extends Sprite
 
         _keyManager = KeyManager.getInstance(stage);
 
-        addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+        stage.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
         stage.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
         stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 

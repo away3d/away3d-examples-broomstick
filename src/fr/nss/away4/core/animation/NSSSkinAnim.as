@@ -66,7 +66,7 @@ package fr.nss.away4.core.animation {
 			_current_joint.dirty=true;
 		}
 		protected function e() : void{
-			skelPose = new SkeletonPose(_numJoints);
+			skelPose = new SkeletonPose();
 			jointPoses = skelPose.jointPoses;
 			var pose : JointPose;;
 			

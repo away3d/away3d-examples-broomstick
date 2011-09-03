@@ -4,13 +4,14 @@ package fr.nss.away4.core.animation.skeleton {
 	import away3d.animators.data.AnimationStateBase;
 	import away3d.animators.data.SkeletonAnimationSequence;
 	import away3d.animators.data.SkeletonAnimationState;
+	import away3d.animators.skeleton.SkeletonNaryLERPNode;
 	import away3d.animators.skeleton.SkeletonTimelineClipNode;
 	import away3d.animators.skeleton.SkeletonTreeNode;
 	import away3d.arcane;
-
-	import fr.nss.NSSClock;
-
+	
 	import flash.geom.Vector3D;
+	
+	import fr.nss.NSSClock;
 	
 	use namespace arcane;
 
@@ -26,19 +27,23 @@ package fr.nss.away4.core.animation.skeleton {
 		private var _sequenceAbsent : String;
 		private var _timeScale : Number = 1;
 		private var _startTime : uint;
-
+		protected var _target : SkeletonAnimationState;
+		private var _lerpNode : SkeletonNaryLERPNode;
+		private var _mainNode : SkeletonTreeNode;
+		
 		/**
 		 * Creates a new AnimationSequenceController object.
 		 */
-		public function NSSSkeletonSequenceController() {
+		public function NSSSkeletonSequenceController(target : SkeletonAnimationState) {
+			_target = target;
 			_sequences = [];
+			
+			if (_target.numJoints > 0)
+				_target.blendTree = (_activeClip ||= new SkeletonTimelineClipNode());
 		}
-		
-
 		
 		/**
 		 * @inheritDoc
-		 */
 		override public function set animationState(value : AnimationStateBase) : void
 		{
 			var state : SkeletonAnimationState = SkeletonAnimationState(value);
@@ -47,6 +52,7 @@ package fr.nss.away4.core.animation.skeleton {
 			if (state.numJoints > 0)
 				state.blendTree = (_activeClip ||= new SkeletonTimelineClipNode(state.numJoints));
 		}
+		 */
 
 		/**
 		 * Plays a sequence with a given name. If the sequence is not found, it may not be loaded yet, and it will retry every frame.
@@ -55,9 +61,9 @@ package fr.nss.away4.core.animation.skeleton {
 		public function play(sequenceName : String) : void
 		{
 			_startTime=uint(NSSClock.currentTime);
-			var state : SkeletonAnimationState = SkeletonAnimationState(_animationState);
-			if (state && state.numJoints > 0) {
-				_activeClip ||= new SkeletonTimelineClipNode(state.numJoints);
+			
+			if (_target && _target.numJoints > 0) {
+				_activeClip ||= new SkeletonTimelineClipNode();
 				_activeClip.clip = _sequences[sequenceName];
 				_activeClip.time = 0;
 			}
@@ -70,19 +76,7 @@ package fr.nss.away4.core.animation.skeleton {
 				//_activeClip.time = 0;
 			}
 			//_activeClip.reset();	_activeClip.time = 0;
-		}
-
-		/**
-		 * The amount by which passed time should be scaled. Used to slow down or speed up animations.
-		 */
-		public function get timeScale() : Number
-		{
-			return _timeScale;
-		}
-
-		public function set timeScale(value : Number) : void
-		{
-			_timeScale = value;
+			start();
 		}
 
 		/**
@@ -96,9 +90,9 @@ package fr.nss.away4.core.animation.skeleton {
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone() : AnimatorBase
+		public function clone(animationState:SkeletonAnimationState) : NSSSkeletonSequenceController
 		{
-			var clone : NSSSkeletonSequenceController = new NSSSkeletonSequenceController();
+			var clone : NSSSkeletonSequenceController = new NSSSkeletonSequenceController(animationState);
 
 			clone._sequences = _sequences;
 
@@ -111,17 +105,17 @@ package fr.nss.away4.core.animation.skeleton {
 		 *
 		 * todo: remove animationState reference, change target to something "IAnimatable" that provides the state?
 		 */
-		override arcane function updateAnimation(dt:uint) : void
+		override protected function updateAnimation(realDT : Number, scaledDT : Number) : void
 		{
 			var blendTree: SkeletonTreeNode;
 			var delta: Vector3D;
-
+			
 			// keep trying to play
 			if (_sequenceAbsent)
 				play(_sequenceAbsent);
 
 			if (_activeClip && _activeClip.clip && _activeClip.clip.duration > 0) {
-				blendTree = SkeletonAnimationState(_animationState).blendTree;
+				blendTree = _target.blendTree;
 				
 			
 				if(_activeClip.clip.looping){
@@ -140,19 +134,10 @@ package fr.nss.away4.core.animation.skeleton {
 				//_activeClip.time += dt/_activeClip.clip.duration*_timeScale;
 				
 					//Logger.log(_activeClip.clip.name+"   "+_activeClip.clip.looping+"   "+_activeClip.time);
-				_animationState.invalidateState();
+				_target.invalidateState();
 				blendTree.updatePositionData();
-				delta = blendTree.rootDelta;
-
-				var dist : Number = delta.length;
-				var len : uint;
-
-				if (dist > 0) {
-					len = _targets.length;
-					for (var i : uint = 0; i < len; ++i)
-						_targets[i].translateLocal(delta, dist);
-				}
-			
+				
+				_target.applyRootDelta();
 			}
 		}
 

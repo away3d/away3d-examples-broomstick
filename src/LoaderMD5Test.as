@@ -20,7 +20,7 @@ package
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
-
+	
 	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -220,7 +220,7 @@ package
 			_view.scene.addChild(_light2);
 			_view.scene.addChild(_light3);
 
-			_view.filters3d = [ new RadialBlurFilter3D(20) ];
+			_view.filters3d = [ new RadialBlurFilter3D(2) ];
 			
 			var material : BitmapMaterial = new BitmapMaterial(new RedLight().bitmapData);
 //			material.blendMode = BlendMode.ADD;

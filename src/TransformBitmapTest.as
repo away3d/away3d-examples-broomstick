@@ -60,11 +60,11 @@ package
 		{
 			_count1 += .002;
 			_count2 += .003;
-			_material.scaleU = Math.sin(_count1)*5;
-			_material.scaleV = Math.cos(_count2)*5;
-			_material.offsetU = _count1*.1;
-			_material.offsetV = _count2*.1;
-			_material.uvRotation = _count1;
+			//_material.scaleU = Math.sin(_count1)*5;
+			//_material.scaleV = Math.cos(_count2)*5;
+			//_material.offsetU = _count1*.1;
+			//_material.offsetV = _count2*.1;
+			//_material.uvRotation = _count1;
 			_view.render();
 		}
 	}

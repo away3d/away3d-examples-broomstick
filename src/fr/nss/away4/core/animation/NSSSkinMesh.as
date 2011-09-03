@@ -1,17 +1,18 @@
 package fr.nss.away4.core.animation {
 	import away3d.animators.data.SkeletonAnimation;
-	import away3d.animators.skeleton.SkeletonJoint;
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.animators.skeleton.Skeleton;
+	import away3d.animators.skeleton.SkeletonJoint;
 	import away3d.arcane;
 	import away3d.core.base.Geometry;
 	import away3d.core.base.SkinnedSubGeometry;
 	import away3d.core.math.Quaternion;
 	import away3d.entities.Mesh;
-
-	import fr.nss.away4.core.animation.skeleton.NSSSkeletonSequenceController;
-
+	
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
+	
+	import fr.nss.away4.core.animation.skeleton.NSSSkeletonSequenceController;
 	
 	use namespace arcane;
 	/**
@@ -26,6 +27,7 @@ package fr.nss.away4.core.animation {
 		protected var _geometry : Geometry;
 		protected var _skeleton : Skeleton;
 		protected var _animationController : NSSSkeletonSequenceController;
+		protected var _animationState : SkeletonAnimationState;
 		protected var _animation : SkeletonAnimation;
 		protected var _rotationQuat : Quaternion;
 		protected   var vertexData : Vector.<VertexData>;
@@ -40,14 +42,11 @@ package fr.nss.away4.core.animation {
 			_rotationQuat.multiply(t2, t1);
 			_mesh = new Mesh(null, null);
 			_geometry = _mesh.geometry;
-			_animationController = new NSSSkeletonSequenceController();
 			_skeleton = new Skeleton();
 			_animation = new SkeletonAnimation(_skeleton);
 			_geometry.animation = _animation;
-			_mesh.animationController = _animationController;
-			
 		}
-
+		
 		
 		protected function j(boneName:String,boneIndex:uint,parentIndex:int,x:Number,y:Number,z:Number,rx:Number,ry:Number,rz:Number) : void{
 			var p:Vector3D=new Vector3D(x,y,z);
@@ -77,12 +76,7 @@ package fr.nss.away4.core.animation {
 			_animation.jointsPerVertex = _maxJointCount;
 			for (var i:uint = 0; i < _meshData.length; ++i) {
 				_geometry.addSubGeometry(translateGeom(_meshData[i].vertexData, _meshData[i].weightData, _meshData[i].indices));
-			}
-			_geometry.animation = _animation;
-			_mesh.animationController = _animationController;
-			
-			
-			 
+			} 
 		}
 	
 		public function get mesh() : Mesh{
@@ -163,8 +157,8 @@ package fr.nss.away4.core.animation {
 			subGeom.updateVertexData(vertices);
 			subGeom.updateUVData(uvs);
 			subGeom.updateIndexData(indices);
-			subGeom.jointIndexData = jointIndices;
-			subGeom.jointWeightsData = jointWeights;
+			subGeom.updateJointIndexData(jointIndices);
+			subGeom.updateJointWeightsData(jointWeights);
 
 			return subGeom;
 		}

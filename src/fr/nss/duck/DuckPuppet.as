@@ -1,11 +1,27 @@
 package fr.nss.duck {
+	import away3d.animators.data.SkeletonAnimationState;
 	import away3d.entities.Mesh;
 	import away3d.events.AnimatorEvent;
-
+	
+	import flash.events.MouseEvent;
+	
 	import fr.nss.NSSClock;
 	import fr.nss.away4.core.animation.skeleton.NSSSkeletonSequenceController;
-
-	import flash.events.MouseEvent;
+	import fr.nss.duck.anim.DuckBecAnim;
+	import fr.nss.duck.anim.DuckBecEndWalk;
+	import fr.nss.duck.anim.DuckBecStand01;
+	import fr.nss.duck.anim.DuckBecStand02;
+	import fr.nss.duck.anim.DuckBecStartWalk;
+	import fr.nss.duck.anim.DuckBobyEndWalk;
+	import fr.nss.duck.anim.DuckBodyAnimTest;
+	import fr.nss.duck.anim.DuckBodyStand01;
+	import fr.nss.duck.anim.DuckBodyStand02;
+	import fr.nss.duck.anim.DuckBodyStartWalk;
+	import fr.nss.duck.anim.DuckEyeAnim;
+	import fr.nss.duck.anim.DuckFaceEndWalk;
+	import fr.nss.duck.anim.DuckFaceStand01;
+	import fr.nss.duck.anim.DuckFaceStand02;
+	import fr.nss.duck.anim.DuckFaceStartWalk;
 
 	/**
 	 * @author Seraf
@@ -29,18 +45,19 @@ package fr.nss.duck {
 
 		public function DuckPuppet(){
 
-			eye=Mesh(World.ressources.duckEye01.mesh.clone());
+			eye = World.ressources.duckEye01.mesh.clone() as Mesh;
 			
-			eyeController = NSSSkeletonSequenceController(eye.animationController);
-
-			duckBodyMesh=Mesh(World.ressources.duckBody.mesh.clone());
+			eyeController = World.ressources.eyeController.clone(eye.animationState as SkeletonAnimationState);
+			
+			duckBodyMesh = World.ressources.duckBody.mesh.clone() as Mesh;
 			eye.addChild(duckBodyMesh);
-			bodyController = NSSSkeletonSequenceController(duckBodyMesh.animationController);
 			
-			duckBecMesh=Mesh(World.ressources.duckBec01.mesh.clone());
+			bodyController = World.ressources.bodyController.clone(duckBodyMesh.animationState as SkeletonAnimationState);
+			
+			duckBecMesh = World.ressources.duckBec01.mesh.clone() as Mesh;
 			eye.addChild(duckBecMesh);
-			becController = NSSSkeletonSequenceController(duckBecMesh.animationController);
-
+			
+			becController = World.ressources.becController.clone(duckBecMesh.animationState as SkeletonAnimationState);
 		}
 
 		private function endStand02(event : AnimatorEvent) : void {

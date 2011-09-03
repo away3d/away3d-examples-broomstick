@@ -147,7 +147,7 @@ package
 		private function onMeshComplete(event : AssetEvent) : void
 		{
 			if (event.asset.assetType == AssetType.MESH) {
-				_mesh = _loader.handle as Mesh;
+				_mesh = _loader.getChildAt(0) as Mesh;
 				_animationController = new BlendingSkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
 				var material : BitmapMaterial = new BitmapMaterial(new Teeth().bitmapData);
 				material.lights = [ _light2, _light3 ];
@@ -172,6 +172,9 @@ package
 		
 		private function onAnimationComplete(event : AssetEvent) : void
 		{
+			if (event.asset.assetType != AssetType.ANIMATION)
+				return;
+			
 			var diffClip : SkeletonAnimationSequence;
 			
 			if(event.asset.assetNamespace == ANIM_NAMES[0]) {

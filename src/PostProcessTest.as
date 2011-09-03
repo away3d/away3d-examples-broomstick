@@ -15,7 +15,7 @@ package
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
 	import away3d.primitives.SkyBox;
-
+	
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
