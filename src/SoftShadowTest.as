@@ -5,7 +5,6 @@ package {
 	import away3d.lights.DirectionalLight;
 	import away3d.materials.ColorMaterial;
 	import away3d.materials.methods.FilteredShadowMapMethod;
-	import away3d.materials.methods.SlowFilteredShadowMapMethod;
 	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.primitives.Plane;
 	import away3d.primitives.Sphere;

@@ -15,7 +15,6 @@ package
 	import away3d.materials.methods.HardShadowMapMethod;
 	import away3d.materials.methods.OutlineMethod;
 	import away3d.materials.methods.ShadingMethodBase;
-	import away3d.materials.methods.SlowFilteredShadowMapMethod;
 	import away3d.materials.methods.SoftShadowMapMethod;
 	import away3d.materials.utils.CubeMap;
 	import away3d.primitives.Plane;
