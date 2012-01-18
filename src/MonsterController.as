@@ -186,10 +186,10 @@ package
 			_controller = new SmoothSkeletonAnimator(SkeletonAnimationState(_mesh.animationState));
 			_controller.timeScale = _timeScale;
 			
-			AssetLibrary.addEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
+			AssetLibrary.removeEventListener(AssetEvent.ASSET_COMPLETE, onAssetComplete);
 			
 			for (var i : uint = 0; i < ANIM_NAMES.length; ++i) {
-				AssetLibrary.load(new URLRequest("assets/" + MD5_DIR + "/" + ANIM_NAMES[i] + ".md5anim"), null, null, ANIM_NAMES[i]);
+				AssetLibrary.load(new URLRequest("assets/" + MD5_DIR + "/" + ANIM_NAMES[i] + ".md5anim"), null, ANIM_NAMES[i]);
 			}
 		}
 
